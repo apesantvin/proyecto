@@ -1,6 +1,6 @@
 # proyecto
 El grupo está compuesto por:
 
-  - Monica Campos Romeo
+  - Mónica Campos Romeo
   
   - Alexis Joel Pesantez Viñamagua
