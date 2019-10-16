@@ -1,5 +1,7 @@
 Chueta
 
+<!-- Esto es un comentario -->
+
 blog/template/blog/post_list.html
 	ORDENADOR
 		<h1><a href = { % url 'log.views.post_detail' pk = post.pk % }>{{ post.title }}</a></h1>
