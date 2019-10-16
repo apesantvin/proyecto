@@ -1,0 +1,19 @@
+Chueta
+
+blog/template/blog/post_list.html
+ORDENADOR
+<h1><a href = { % url 'log.views.post_detail' pk = post.pk % }>
+PYTHONANYWHERE
+<h1><a href = { % url 'blog = post_detail' pk = post.pk % }>
+
+blog/urls.py
+ORDENADOR
+sin app_name='blog'
+PYTHONANYWHERE
+añadir app_name_'blog'
+
+blog/settings.py
+ORDENADOR
+MIDDLEWERE_CLASSES = [
+PYTHONANYWHERE
+MIDDLEWERE = [
