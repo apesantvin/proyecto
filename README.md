@@ -1,4 +1,6 @@
 # proyecto
 El grupo está compuesto por:
-  -Monica Campos Romeo
-  -Alexis Joel Pesantez Viñamagua
+
+  - Mónica Campos Romeo
+  
+  - Alexis Joel Pesantez Viñamagua
