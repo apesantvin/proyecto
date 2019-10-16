@@ -12,7 +12,7 @@ blog/urls.py
 	PYTHONANYWHERE
 		añadir app_name_'blog'
 
-blog/settings.py
+mysite/settings.py
 	ORDENADOR
 		MIDDLEWARE_CLASSES = [
 	PYTHONANYWHERE
