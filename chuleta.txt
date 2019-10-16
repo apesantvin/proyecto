@@ -4,7 +4,7 @@ Chueta
 
 blog/template/blog/post_list.html
 	ORDENADOR
-		<h1><a href = { % url 'log.views.post_detail' pk = post.pk % }>{{ post.title }}</a></h1>
+		<h1><a href = { % url 'blog.views.post_detail' pk = post.pk % }>{{ post.title }}</a></h1>
 	PYTHONANYWHERE
 		<h1><a href = { % url 'blog = post_detail' pk = post.pk % }>{{ post.title }}</a></h1>
 
@@ -12,7 +12,7 @@ blog/urls.py
 	ORDENADOR
 		sin app_name='blog'
 	PYTHONANYWHERE
-		añadir app_name_'blog'
+		añadir app_name='blog'
 
 mysite/settings.py
 	ORDENADOR
