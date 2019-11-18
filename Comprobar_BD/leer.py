@@ -1,5 +1,4 @@
-from flask import Flask, render_template
-import sqlite3, json, sys
+import sqlite3, sys
 
 base_datos=sys.argv[1]
 
