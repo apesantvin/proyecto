@@ -2,20 +2,22 @@ import sqlite3, sys
 
 base_datos=sys.argv[1]
 
+tablas_Gestion = ['GestionCO2_consumo',
+'GestionCO2_empresa',
+'GestionCO2_personal',
+'GestionCO2_personal_empresa',
+'GestionCO2_viaje',
+'GestionCO2_viaje_personal',
+'GestionCO2_vehiculo',
+'GestionCO2_generador',
+'GestionCO2_edificio',
+'GestionCO2_vehiculoconsumo',
+'GestionCO2_edificioconsumo']
+
 def get_cursor():
     conn = sqlite3.connect(base_datos)
     c=conn.cursor()
     return c
-
-def get_tables():
-    cur=get_cursor().execute("select name from sqlite_master where type = 'table';")
-    res=cur.fetchall()
-    cur.close()
-    tablas=[]
-    for tabla in res:
-        string = ''.join(tabla)
-        tablas.append(string)
-    return tablas
         
 def get_tuplas(tabla):
     cur=get_cursor().execute("select * from "+tabla+";")
@@ -46,7 +48,7 @@ def EscribirTabla(tabla):
         
 def Escribir_fichero():
     open('datos.txt','w')
-    for (tabla) in get_tables():
+    for (tabla) in tablas_Gestion:
         EscribirTabla(tabla);
        
 if __name__ == '__main__':

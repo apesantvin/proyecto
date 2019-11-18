@@ -2,6 +2,20 @@ import sqlite3, sys
 
 base_datos=sys.argv[1]
 
+tablas_Gestion = ['GestionCO2_consumo',
+'GestionCO2_empresa',
+'GestionCO2_personal',
+'GestionCO2_personal_empresa',
+'GestionCO2_viaje',
+'GestionCO2_viaje_personal',
+'GestionCO2_vehiculo',
+'GestionCO2_generador',
+'GestionCO2_edificio',
+'GestionCO2_vehiculoconsumo',
+'GestionCO2_edificioconsumo']
+
+tabla_usuarios='auth_user'
+
 def get_cursor():
     conn = sqlite3.connect(base_datos)
     c=conn.cursor()
@@ -35,19 +49,18 @@ def get_datos_tuplas(tabla):
 
 def EscribirTabla(tabla):
     datos_tuplas=get_datos_tuplas(tabla)
-    with open('datos.txt','a+') as file:
-        print('tuplas,{},{}'.format(tabla, datos_tuplas))
+    print('tuplas,{},{}'.format(tabla, datos_tuplas))
     tuplas=get_tuplas(tabla)
-    with open('datos.txt','a+') as file:
-        for (tupla) in tuplas:
-            print('{},{}'.format(tabla, tupla))
-        if not tuplas:
-            print('{} no tiene tuplas\n'.format(tabla))
+    for (tupla) in tuplas:
+        print('{},{}'.format(tabla, tupla))
+    if not tuplas:
+        print('{} no tiene tuplas\n'.format(tabla))
         
 def Escribir_fichero():
-    open('datos.txt','w')
-    for (tabla) in get_tables():
+    #for (tabla) in get_tables():
+    for tabla in tablas_Gestion:
         EscribirTabla(tabla);
+         
        
 if __name__ == '__main__':
     Escribir_fichero()

@@ -3,20 +3,22 @@ import sqlite3, json, sys
 
 base_datos=sys.argv[1]
 
+tablas_Gestion = ['GestionCO2_consumo',
+'GestionCO2_empresa',
+'GestionCO2_personal',
+'GestionCO2_personal_empresa',
+'GestionCO2_viaje',
+'GestionCO2_viaje_personal',
+'GestionCO2_vehiculo',
+'GestionCO2_generador',
+'GestionCO2_edificio',
+'GestionCO2_vehiculoconsumo',
+'GestionCO2_edificioconsumo']
+
 def get_cursor():
     conn = sqlite3.connect(base_datos)
     c=conn.cursor()
     return c
-
-def get_tables():
-    cur=get_cursor().execute("select name from sqlite_master where type = 'table';")
-    res=cur.fetchall()
-    cur.close()
-    tablas=[]
-    for tabla in res:
-        string = ''.join(tabla)
-        tablas.append(string)
-    return tablas
 
 def LeerDatos():
     datos = []
@@ -27,10 +29,10 @@ def LeerDatos():
 
 def formato_datos(datos,tuplas):
     sql_1=""
-    if (datos[0]) in get_tables():
+    if (datos[0]) in tablas_Gestion:
         sql = '"INSERT INTO ' + datos[0] + ' ('+tuplas+') VALUES ('
         for i in range(1,len(datos)):
-            datos[i] = datos[i].translate(None, '()u')
+            datos[i] = datos[i].translate(None, '() u')
             sql_1=sql_1+ ''.join(datos[i].strip().split('"'))
             sql_1=sql_1
             if i!=len(datos)-1:
@@ -41,9 +43,9 @@ def formato_datos(datos,tuplas):
     
 def formato_tuplas(datos):
     tuplas=""
-    if (datos[1]) in get_tables():
+    if (datos[1]) in tablas_Gestion:
         for i in range(2,len(datos)):
-            datos[i] = datos[i].translate(None, "[ u' ]")
+            datos[i] = datos[i].translate(None, "[ u ' ]")
             tuplas=tuplas+(datos[i])
             if i!=len(datos)-1:
                 tuplas=tuplas+","
