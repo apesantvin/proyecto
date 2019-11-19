@@ -3,7 +3,7 @@ from django.utils import timezone
 
 # Create your models here.
 class Empresa(models.Model):
-    usuario = models.ForeignKey('auth.User', on_delete=models.CASCADE)
+    usuario = models.ManyToManyField('auth.User')
     nombre = models.CharField(max_length=50)
     telefono = models.IntegerField()
     correo = models.EmailField() 
