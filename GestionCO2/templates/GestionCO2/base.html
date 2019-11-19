@@ -1,0 +1,21 @@
+{% load static %}
+
+<html>
+    <head>
+        <title>Gestionador CO2</title>
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+        <link href="https://fonts.googleapis.com/css?family=Playfair+Display&display=swap" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    </head>
+    <body>
+        <div class="page-header">
+            <h1><a href="{% url 'añadir_empresa' %}" class="top-menu"><span class="glyphicon glyphicon-plus"></span></a></h1>
+            <h1><a href="/">Gestionador CO2</a></h1>
+        </div>
+        <div class="Lista">
+            {% block content %}
+            {% endblock %}
+        </div>
+    </body>
+</html>

@@ -1,0 +1,14 @@
+h1,h2 {
+    color:#df1254;
+    font-family: 'Playfair Display', serif;
+}
+body {
+    padding-left:15px;    
+}
+.page-header,h1 a {
+    color:#000000;
+    background-color: #C25100;
+    margin-top: 0;
+    padding: 20px 20px 20px 40px;
+    font-family: 'Playfair Display', serif;
+}
