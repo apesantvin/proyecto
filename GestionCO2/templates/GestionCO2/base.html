@@ -10,7 +10,9 @@
     </head>
     <body>
         <div class="page-header">
-            <h1><a href="{% url 'añadir_empresa' %}" class="top-menu"><span class="glyphicon glyphicon-plus"></span></a></h1>
+            {% if user.is_authenticated %}
+                <h1><a href="{% url 'añadir_empresa' %}" class="top-menu"><span class="glyphicon glyphicon-plus"></span></a></h1>
+            {% endif %}
             <h1><a href="/">Gestionador CO2</a></h1>
         </div>
         <div class="Lista">
