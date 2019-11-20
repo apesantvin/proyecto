@@ -5,3 +5,11 @@ Chueta
 $ workon <your-pythonanywhere-domain>.pythonanywhere.com
 (ola.pythonanywhere.com)$ python manage.py collectstatic
 [...]
+
+Mejor tutorial de django:
+
+https://developer.mozilla.org/es/docs/Learn/Server-side/Django/development_environment
+
+Pagina para ver las fuentes de letra:
+
+https://fonts.google.com/specimen/Shadows+Into+Light?selection.family=Shadows+Into+Light
