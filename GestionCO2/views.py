@@ -11,8 +11,8 @@ def empresa_detalles(request,pk):
     return render(request, 'GestionCO2/empresa_detalles.html', {'empresa': empresa})
 
 def añadir_empresa(request):
-    if request.method == "Empresa":
-        form = EmpresaForm(request.Empresa)
+    if request.method == "POST":
+        form = EmpresaForm(request.POST,request.FILES)
         if form.is_valid():
             empresa = form.save(commit=False)
             empresa.usuario = request.user

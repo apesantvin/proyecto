@@ -3,49 +3,145 @@ from django.utils import timezone
 
 # Create your models here.
 class Empresa(models.Model):
-    usuario = models.ManyToManyField('auth.User')
+    usuario = models.ForeignKey('auth.User',on_delete=models.CASCADE)
     nombre_empresa = models.CharField(max_length=50)
+    logo=models.ImageField(upload_to='logos')
+    descripcion = models.TextField()
     telefono = models.IntegerField()
     correo = models.EmailField() 
     fecha_inscripcion = models.DateField('Fecha de inscripcion',default=timezone.now)
+    permitido_publicar= models.BooleanField(default=False)
+    
+    def publicar(self):
+        self.permitido_publicar=True
+        self.save()
+    
+    def __str__(self):
+        return (self.nombre_empresa)
     
 class Edificio(models.Model):
     empresa = models.ForeignKey('Empresa',on_delete=models.CASCADE)
+    nombre_edificio= models.CharField(max_length=30)
     localizacion = models.CharField(max_length=50)
-    fecha_adquisicion = models.DateField('Fecha contratacion',blank=True, null=True)
+    fecha_adquisicion = models.DateField('Fecha contratación',blank=True, null=True)
+    
+    def __str__(self):
+        return self.nombre_edificio
     
 class Generador(models.Model):
+    FUENTES = (
+        ('1', 'Paneles Solares'),
+        ('2', 'Molinos Eólicos'),
+        ('3', 'Otros...'),
+    )
     edificio = models.ForeignKey('Edificio',on_delete=models.CASCADE)
-    medios = models.CharField('Tipo de Generador',max_length=50,help_text='Paneles Solares o Molinos eolicos')
+    medios = models.CharField('Tipo de Generador',max_length=50,choices=FUENTES)
     cantidad_generada = models.IntegerField(help_text='en KWH')
-    fecha_generacion= models.DateField('Fecha de la generacion')
+    fecha_generacion= models.DateField('Fecha de la generación')
+    
+    def __str__(self):
+        return str(self.id)
     
 class Vehiculo(models.Model):
+    TRANSPORTES=(
+        ('1', 'Coche'),
+        ('2', 'Moto'),
+        ('3', 'Autobus'),
+        ('4', 'Camión'),
+    )
+    TAMANOS = (
+        ('1', 'Pequeño'),
+        ('2', 'Mediano'),
+        ('3', 'Grande'),
+    )
     empresa = models.ForeignKey('Empresa',on_delete=models.CASCADE)
+    tipo_tranporte=models.CharField('Vehiculo',max_length=50,choices=TRANSPORTES)
     matricula = models.CharField(max_length=8)
-    marca = models.CharField(max_length=50)
-    modelo = models.CharField(max_length=50)
+    tamano = models.CharField('Tamaño',max_length=50,choices=TAMANOS)
     fecha_compra = models.DateField('Fecha compra')
     
+    def __str__(self):
+        return self.matricula
+
 class Personal(models.Model):
-    empresa = models.ManyToManyField('Empresa')
-    nombre_persona = models.CharField(max_length=50)
+    empresa = models.ForeignKey('Empresa',on_delete=models.CASCADE)
+    nombre_persona = models.CharField('Nombre',max_length=25)
+    apellidos_persona= models.CharField('Apellidos',max_length=30)
     fecha_contratacion = models.DateField('Fecha contratacion')
     
+    def __str__(self):
+        return '{0} {1}'.format(self.nombre_persona,self.apellidos_persona)
+
 class Viaje(models.Model):
+    TRANSPORTES2=(
+        ('1', 'Coche'),
+        ('2', 'Avión'),
+        ('3', 'Autobus'),
+        ('4', 'Tren'),
+        ('5', 'Barco'),
+    )
+    fecha_viaje = models.DateField(default=timezone.now)
     personal = models.ManyToManyField('Personal')
-    distancia = models.IntegerField('KM recorridos')
-    transporte = models.CharField(max_length=50)
-    noches_hotel = models.IntegerField('Noches en hotel')
+    distancia = models.FloatField('KM recorridos')
+    transporte = models.CharField(max_length=50,choices=TRANSPORTES2)
+    noches_hotel = models.IntegerField('Noches en hotel',default=0)
+
+    def __str__(self):
+        return '{0}'.format(self.fecha_viaje)
     
 class Consumo(models.Model):
-    tipo = models.CharField('¿Que ha consumido?',max_length=50,help_text='Agua, Electricidad, Aceite, Propano, Gas Natural, Gasolina o Diesel')
     cantidad_consumida = models.IntegerField()
     fecha_consumo= models.DateField('Fecha del consumo')
     
 class EdificioConsumo(Consumo):
+    TIPOS_ED = (
+        ('1', 'Agua'),
+        ('2', 'Electricidad'),
+        ('3', 'Aceite'),
+        ('4', 'Propano'),
+        ('5', 'Gas Natural'),
+    )
     edificio = models.ForeignKey('Edificio',on_delete=models.CASCADE)
+    tipo = models.CharField('¿Que ha consumido?',max_length=50,choices=TIPOS_ED)
+    
+    def __str__(self):
+        return str(self.id)
     
 class VehiculoConsumo(Consumo):
+    TIPOS_VE= (
+        ('1', 'Electricidad'),
+        ('2', 'Gasolina'),
+        ('3', 'Diesel'),
+    )
     personal = models.ForeignKey('Personal',on_delete=models.CASCADE)
     vehiculo = models.ForeignKey('Vehiculo',on_delete=models.CASCADE)
+    tipo = models.CharField('¿Que ha consumido?',max_length=50,choices=TIPOS_VE)
+    
+    def __str__(self):
+        return str(self.id)
+    
+class Mensaje (models.Model):
+    empresa = models.ForeignKey('Empresa',on_delete=models.CASCADE)        
+    titulo = models.CharField(max_length=200)        
+    texto = models.TextField()        
+    fecha_publicacion_mensaje = models.DateTimeField(default=timezone.now)        
+    respondido =models.IntegerField(default=0)
+    
+    def responder(self):
+        self.respondido = 1
+        self.save()
+        
+    def preguntar(self):
+        self.respondido = 0
+        self.save()
+        
+    def __str__(self):
+        return self.titulo
+    
+class Respuesta(models.Model):
+    mensaje = models.ForeignKey('Mensaje', on_delete=models.CASCADE, related_name='respuestas')
+    texto = models.TextField(default='', blank=True, null=True)  
+    fecha_publicacion_respuesta = models.DateTimeField(default=timezone.now)    
+
+    def __str__(self):
+        return self.texto
