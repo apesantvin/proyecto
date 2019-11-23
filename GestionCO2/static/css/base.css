@@ -12,3 +12,10 @@ body {
     padding: 20px 20px 20px 40px;
     font-family: 'Playfair Display', serif;
 }
+
+.titulo_pagina{
+    text-align:center;
+}
+.Texto{
+    font-size:large;
+}

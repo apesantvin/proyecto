@@ -1,8 +1,14 @@
 {% extends 'GestionCO2/base.html' %}
 
 {% block content %}
-    <h1>Empresas registradas</h1>
+    <div class="Titulo_pagina">
+            <h1>Empresas registradas</h1>
+    </div>
     {% for tabla in datos %}
-    <h3><a href="{% url 'empresa_detalles' pk=tabla.pk %}">{{ tabla.nombre_empresa }}</a></h3>
+        <div class="Texto">
+            <dl>
+                <dd><li type="disc"><a href="{% url 'empresa_detalles' pk=tabla.pk %}">{{ tabla.nombre_empresa }}</a></li></dd>
+            </dl>
+        </div>
     {% endfor %}
 {% endblock %}
