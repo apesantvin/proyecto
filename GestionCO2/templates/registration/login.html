@@ -1,0 +1,26 @@
+{% extends "GestionCO2/base.html" %}
+
+{% block content %}
+    {% if form.errors %}
+        <div class="Error">
+            <p>Tu usuario y contraseña no concuerdan: Intentelo de nuevo.</p>
+        </div>
+    {% endif %}
+
+    <form method="post" action="{% url 'login' %}">
+    {% csrf_token %}
+        <table>
+        <tr>
+            <td><label for="usuario">Usuario:</label></td>
+            <td>{{ form.username }}</td>
+        </tr>
+        <tr>
+            <td><label for="usuario">Contraseña:</label></td>
+            <td>{{ form.password }}</td>
+        </tr>
+        </table>
+
+        <input type="submit" value="Entrar" />
+        <input type="hidden" name="next" value="{{ next }}" />
+    </form>
+{% endblock %}

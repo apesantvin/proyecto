@@ -1,0 +1,29 @@
+{% extends 'blog/base.html' %}
+
+{% block content %}
+    <div class="Titulo_register">
+        <h2>Registrar usuario</h2>
+    </div>
+    <form method="post">
+        {% csrf_token %}
+        {% if form.errors %}
+            <div class="Error">
+                <p>Este usuario ya está cogido, elija otro, o las contraseñas no coinciden, intentelo de nuevo:</p>
+            </div>
+        {% endif %}
+        <br>
+        <label for="id_username">Usuario:</label>
+        <input id="id_username" type="text" name="username" maxlength="150" autofocus="" required="">
+        <br>
+        <label for="id_password1"> Contraseña:</label>
+        <input id="id_password1" type="password" name="password1" required="">
+        <br>
+        <label for="id_password2">Confirme su contraseña:</label>
+        <input id="id_password2" type="password" name="password2" required="">
+        <br>
+        <button type="submit">Registrar</button>
+    </form>
+
+    <hr />
+    <a class="btn btn-default" href="{% url 'login' %}">Entrar </a>
+{% endblock %}

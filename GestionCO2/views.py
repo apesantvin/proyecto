@@ -1,6 +1,8 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from GestionCO2.models import *
 from .forms import *
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import login as do_login
 
 def empresa_lista(request):
     datos = Empresa.objects.all()
@@ -22,4 +24,3 @@ def añadir_empresa(request):
     else:
         form = EmpresaForm()
     return render(request, 'GestionCO2/añadir_empresa.html', {'form': form})
-# Create your views here.
