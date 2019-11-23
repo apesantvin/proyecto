@@ -1,6 +1,34 @@
 from django.db import models
 from django.utils import timezone
 
+TRANSPORTES2=(
+    ('1', 'Coche'),
+    ('2', 'Avión'),
+    ('3', 'Autobus'),
+    ('4', 'Tren'),
+    ('5', 'Barco'),
+)
+
+TIPOS_ED = (
+    ('1', 'Agua'),
+    ('2', 'Electricidad'),
+    ('3', 'Aceite'),
+    ('4', 'Propano'),
+    ('5', 'Gas Natural'),
+)
+
+TIPOS_VE= (
+    ('1', 'Electricidad'),
+    ('2', 'Gasolina'),
+    ('3', 'Diesel'),
+)
+
+FUENTES = (
+    ('1', 'Paneles Solares'),
+    ('2', 'Molinos Eólicos'),
+    ('3', 'Otros...'),
+)
+
 # Create your models here.
 class Empresa(models.Model):
     usuario = models.ForeignKey('auth.User',on_delete=models.CASCADE)
@@ -29,11 +57,6 @@ class Edificio(models.Model):
         return self.nombre_edificio
     
 class Generador(models.Model):
-    FUENTES = (
-        ('1', 'Paneles Solares'),
-        ('2', 'Molinos Eólicos'),
-        ('3', 'Otros...'),
-    )
     edificio = models.ForeignKey('Edificio',on_delete=models.CASCADE)
     medios = models.CharField('Tipo de Generador',max_length=50,choices=FUENTES)
     cantidad_generada = models.IntegerField(help_text='en KWH')
@@ -73,13 +96,6 @@ class Personal(models.Model):
         return '{0} {1}'.format(self.nombre_persona,self.apellidos_persona)
 
 class Viaje(models.Model):
-    TRANSPORTES2=(
-        ('1', 'Coche'),
-        ('2', 'Avión'),
-        ('3', 'Autobus'),
-        ('4', 'Tren'),
-        ('5', 'Barco'),
-    )
     fecha_viaje = models.DateField(default=timezone.now)
     personal = models.ManyToManyField('Personal')
     distancia = models.FloatField('KM recorridos')
@@ -94,13 +110,6 @@ class Consumo(models.Model):
     fecha_consumo= models.DateField('Fecha del consumo')
     
 class EdificioConsumo(Consumo):
-    TIPOS_ED = (
-        ('1', 'Agua'),
-        ('2', 'Electricidad'),
-        ('3', 'Aceite'),
-        ('4', 'Propano'),
-        ('5', 'Gas Natural'),
-    )
     edificio = models.ForeignKey('Edificio',on_delete=models.CASCADE)
     tipo = models.CharField('¿Que ha consumido?',max_length=50,choices=TIPOS_ED)
     
@@ -108,11 +117,6 @@ class EdificioConsumo(Consumo):
         return str(self.id)
     
 class VehiculoConsumo(Consumo):
-    TIPOS_VE= (
-        ('1', 'Electricidad'),
-        ('2', 'Gasolina'),
-        ('3', 'Diesel'),
-    )
     personal = models.ForeignKey('Personal',on_delete=models.CASCADE)
     vehiculo = models.ForeignKey('Vehiculo',on_delete=models.CASCADE)
     tipo = models.CharField('¿Que ha consumido?',max_length=50,choices=TIPOS_VE)
