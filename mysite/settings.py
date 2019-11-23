@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'GestionCO2.apps.Gestionco2Config',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
