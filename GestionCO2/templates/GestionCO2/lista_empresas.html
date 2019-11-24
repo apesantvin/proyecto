@@ -2,13 +2,30 @@
 
 {% block content %}
     <div class="Titulo_pagina">
-            <h1>Empresas registradas</h1>
+        <h1>Empresas registradas</h1>
+        <br />
+        <br />
     </div>
-    {% for tabla in datos %}
-        <div class="Texto">
-            <dl>
-                <dd><li type="disc"><a href="{% url 'empresa_detalles' pk=tabla.pk %}">{{ tabla.nombre_empresa }}</a></li></dd>
-            </dl>
+    <div style="overflow-x:auto;">
+        <div style="overflow-x:auto;">
+            {% for dato in datos %}
+                <div id="div1">
+                    <table class="table table-condensed" style="border-spacing: 5px;">
+                    {% for tabla in dato %}
+                        <td style="width:20%">
+                            <center>
+                            <div style="border-style:ridge;border-width:1px;">
+                                <a href="{% url 'empresa_detalles' pk=tabla.pk %}"><img src="/media/{{tabla.logo}}" width="250" height="200"/></a>
+                            </div>
+                            <div>
+                                <h4>{{tabla.nombre_empresa}}</h4>
+                            </div>
+                            </center>
+                        </td>
+                    {% endfor %}
+                    </table>
+                </div>
+            {% endfor %}
         </div>
-    {% endfor %}
+    </div>
 {% endblock %}

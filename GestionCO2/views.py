@@ -6,7 +6,21 @@ from django.contrib.auth import login as do_login
 
 def empresa_lista(request):
     datos = Empresa.objects.all().order_by('nombre_empresa')
-    return render(request, 'GestionCO2/lista_empresas.html', {'datos':datos, 'Nombre':'Personas'})
+    letras=[]
+    letras.append(datos[0].nombre_empresa[0])
+    empresa_por_alfabeto=[]
+    misma_letra=[]
+    for dato in datos:
+        #if dato.permitido_publicar:
+            if dato.nombre_empresa[0] not in letras:
+                letras.append(dato.nombre_empresa[0])
+                empresa_por_alfabeto.append(misma_letra)
+                misma_letra=[]
+                misma_letra.append(dato)
+            else:
+                misma_letra.append(dato)
+    empresa_por_alfabeto.append(misma_letra)
+    return render(request, 'GestionCO2/lista_empresas.html', {'datos':empresa_por_alfabeto})
 
 def empresa_detalles(request,pk):
     empresa = get_object_or_404(Empresa, pk=pk)
@@ -17,6 +31,7 @@ def añadir_empresa(request):
         form = EmpresaForm(request.POST,request.FILES)
         if form.is_valid():
             empresa = form.save(commit=False)
+            empresa.nombre_empresa=empresa.nombre_empresa.capitalize()
             empresa.usuario = request.user
             empresa.fecha_inscripcion = timezone.now()
             empresa.save()

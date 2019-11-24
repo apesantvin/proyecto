@@ -7,15 +7,22 @@ body {
 }
 .page-header,h1 a {
     color:#000000;
-    background-color: #C25100;
+    background-color: #56E099;
     margin-top: 0;
     padding: 20px 20px 20px 40px;
     font-family: 'Playfair Display', serif;
 }
 
-.titulo_pagina{
+.titulo_pagina, .Listado_imagenes{
     text-align:center;
 }
 .Texto{
     font-size:large;
+}
+#div1 {
+     overflow:scroll;
+    background-color:#ffffff;
+}
+#div1 table {
+    background-color:#ffffff;
 }
