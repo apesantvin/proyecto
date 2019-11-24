@@ -5,8 +5,8 @@ from GestionCO2.models import *
 from django.contrib.auth.models import User
 
 def Consumos():
-        AddViaje():
-        AddGenerador():
+        AddViaje()
+        AddGenerador()
         for vehiculo in Vehiculo.objects.all():
             AddConsumoVehiculo(vehiculo)
         for ed in Edificio.objects.all():
