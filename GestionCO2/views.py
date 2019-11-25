@@ -6,26 +6,29 @@ from django.contrib.auth import login as do_login
 
 def empresa_lista(request):
     datos = Empresa.objects.all().order_by('nombre_empresa')
-    letras=[]
-    letras.append(datos[0].nombre_empresa[0])
-    empresa_por_alfabeto=[]
-    misma_letra=[]
-    for dato in datos:
-        #if dato.permitido_publicar:
-            if dato.nombre_empresa[0] not in letras:
-                letras.append(dato.nombre_empresa[0])
-                empresa_por_alfabeto.append(misma_letra)
-                misma_letra=[]
-                misma_letra.append(dato)
-            else:
-                misma_letra.append(dato)
-    empresa_por_alfabeto.append(misma_letra)
-    letras_palabras = []
-    for i in range(len(letras)):
-        letras_palabras.append([])
-        letras_palabras[i].append(letras[i])
-        letras_palabras[i].append(empresa_por_alfabeto[i])
-    return render(request, 'GestionCO2/lista_empresas.html', {'datos':letras_palabras,'indexado':letras})
+    if datos: 
+        letras=[]
+        letras.append(datos[0].nombre_empresa[0])
+        empresa_por_alfabeto=[]
+        misma_letra=[]
+        for dato in datos:
+            #if dato.permitido_publicar:
+                if dato.nombre_empresa[0] not in letras:
+                    letras.append(dato.nombre_empresa[0])
+                    empresa_por_alfabeto.append(misma_letra)
+                    misma_letra=[]
+                    misma_letra.append(dato)
+                else:
+                    misma_letra.append(dato)
+        empresa_por_alfabeto.append(misma_letra)
+        letras_palabras = []
+        for i in range(len(letras)):
+            letras_palabras.append([])
+            letras_palabras[i].append(letras[i])
+            letras_palabras[i].append(empresa_por_alfabeto[i])
+        return render(request, 'GestionCO2/lista_empresas.html', {'datos':letras_palabras,'indexado':letras})
+    else:
+        return render(request, 'GestionCO2/lista_empresas.html', {'datos':[],'indexado':[]})
 
 def empresa_detalles(request,pk):
     empresa = get_object_or_404(Empresa, pk=pk)

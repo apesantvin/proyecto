@@ -5,7 +5,9 @@
         <h1>Empresas registradas</h1>
         <br />
         {% for indice in indexado%}
-                <a href="#{{indice}}">{{indice}}</a>
+            <a href="#{{indice}}">{{indice}}</a>
+        {% empty %}
+            <p>No hay indice</p>
         {% endfor %}
         <br />
     </div>
