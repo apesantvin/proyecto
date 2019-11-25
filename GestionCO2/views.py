@@ -20,7 +20,12 @@ def empresa_lista(request):
             else:
                 misma_letra.append(dato)
     empresa_por_alfabeto.append(misma_letra)
-    return render(request, 'GestionCO2/lista_empresas.html', {'datos':empresa_por_alfabeto})
+    letras_palabras = []
+    for i in range(len(letras)):
+        letras_palabras.append([])
+        letras_palabras[i].append(letras[i])
+        letras_palabras[i].append(empresa_por_alfabeto[i])
+    return render(request, 'GestionCO2/lista_empresas.html', {'datos':letras_palabras,'indexado':letras})
 
 def empresa_detalles(request,pk):
     empresa = get_object_or_404(Empresa, pk=pk)

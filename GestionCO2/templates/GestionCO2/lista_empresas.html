@@ -4,11 +4,15 @@
     <div class="Titulo_pagina">
         <h1>Empresas registradas</h1>
         <br />
+        {% for indice in indexado%}
+                <a href="#{{indice}}">{{indice}}</a>
+        {% endfor %}
         <br />
     </div>
     <div style="overflow-x:auto;">
         <div style="overflow-x:auto;">
-            {% for dato in datos %}
+            {% for letra,dato in datos %}
+                <A name="{{letra}}">{{letra}}</a>
                 <div id="div1">
                     <table class="table table-condensed" style="border-spacing: 5px;">
                     {% for tabla in dato %}
