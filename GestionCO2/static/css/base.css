@@ -1,16 +1,19 @@
-h1,h2 {
+h1{
     color:#df1254;
     font-family: 'Playfair Display', serif;
 }
 body {
     padding-left:15px;    
 }
-.page-header,h1 a {
+.page-header h2 a {
     color:#000000;
+    font-family: 'Playfair Display', serif;
+}
+.page-header{
     background-color: #56E099;
-    margin-top: 0;
     padding: 20px 20px 20px 40px;
     font-family: 'Playfair Display', serif;
+    margin:20px 0;
 }
 
 .titulo_pagina, .Listado_imagenes{
