@@ -1,7 +1,7 @@
 {% extends 'GestionCO2/base.html' %}
 
 {% block content %}
-    <div class="Titulo_register">
+    <div class="titulo_pagina">
         <h2>Registrar usuario</h2>
     </div>
     <form method="post">
@@ -21,9 +21,9 @@
         <label for="id_password2">Confirme su contraseña:</label>
         <input id="id_password2" type="password" name="password2" required="">
         <br>
-        <button type="submit">Registrar</button>
+        <input class="btn btn-default" type="submit" value="Crear cuenta" />
+        <a class="btn btn-default" href="{% url 'login' %}">Iniciar sesion </a>
     </form>
 
     <hr />
-    <a class="btn btn-default" href="{% url 'login' %}">Entrar </a>
 {% endblock %}
