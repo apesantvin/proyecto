@@ -12,7 +12,8 @@ class EmpresaForm(forms.ModelForm):
             'logo',
             'descripcion',
             'telefono',
-            'correo')
+            'correo',
+            'permitido_publicar')
         
 class formularioregistroForm(UserCreationForm):
     email = forms.EmailField(required = True)

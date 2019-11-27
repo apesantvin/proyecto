@@ -44,3 +44,6 @@ form {
     margin: 0 auto;
     overflow:hidden;
 }
+.formulario_añadir{
+    width: 400px;
+}
