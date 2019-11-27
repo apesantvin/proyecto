@@ -6,7 +6,6 @@ from django.contrib.auth.models import User
 from django.contrib.auth import login as do_login
 from django.contrib.auth.decorators import login_required
 
-
 def empresa_lista(request):
     datos = Empresa.objects.all().order_by('nombre_empresa')
     if datos: 
@@ -51,21 +50,6 @@ def añadir_empresa(request):
     else:
         form = EmpresaForm()
     return render(request, 'GestionCO2/añadir_empresa.html', {'form': form})
-
-def register(request):
-    form = UserCreationForm()
-    form.fields['username'].help_text = None
-    form.fields['password1'].help_text = None
-    form.fields['password2'].help_text = None
-    if request.method == "POST":
-        form = UserCreationForm(data=request.POST)
-
-        if form.is_valid():
-            user = form.save()
-            if user is not None:
-                do_login(request, user)
-                return redirect('/')
-    return render(request, "registration/register.html", {'form': form})
 
 def register(request):
     form = formularioregistroForm()
