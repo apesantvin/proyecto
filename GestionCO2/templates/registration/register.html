@@ -2,7 +2,7 @@
 
 {% block content %}
     <div class="titulo_pagina">
-        <h2>Registrar usuario</h2>
+        <h2>Crear usuario</h2>
     </div>
     <form method="post">
         {% csrf_token %}
@@ -11,14 +11,33 @@
                 <p>Este usuario ya está cogido, elija otro, o las contraseñas no coinciden, intentelo de nuevo:</p>
             </div>
         {% endif %}
-        <br>
+         <br>
         <label for="id_username">Usuario:</label>
+        <br>
         <input id="id_username" type="text" name="username" maxlength="150" autofocus="" required="">
         <br>
+        <label for="id_first_name">Nombre:</label>
+        <br>
+        <input type="text" name="first_name" id="id_first_name">
+        <br>
+        <label for="id_last_name">Apellidos:</label>
+        <br>
+        <input type="text" name="last_name" id="id_last_name">
+        <br>
+        <label for="id_birtday">Fecha de nacimiento:</label>
+        <br>
+        <input type="text" name="birtday" id="id_birtday">
+        <br>
+        <label for="id_email">Email:</label>
+        <br>
+        <input type="email" name="email" required="" id="id_email">
+        <br>
         <label for="id_password1"> Contraseña:</label>
+        <br>
         <input id="id_password1" type="password" name="password1" required="">
         <br>
         <label for="id_password2">Confirme su contraseña:</label>
+        <br>
         <input id="id_password2" type="password" name="password2" required="">
         <br>
         <input class="btn btn-default" type="submit" value="Crear cuenta" />

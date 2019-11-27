@@ -9,13 +9,15 @@
 
     <form method="post" action="{% url 'login' %}">
     {% csrf_token %}
-        <br>
-        <label for="usuario">Usuario:</label>
-        <input id="usuario" type="text" name="username" maxlength="150" autofocus="" required="">
-        <br>
-        <label for="usuario">Contraseña:</label>
-        <input id="password" type="text" name="username" maxlength="150" autofocus="" required="">
-        <br>
+        <table>
+            <label for="usuario">Usuario:</label>
+            <br>
+            {{ form.username }}
+            <label for="usuario">Contraseña:</label>
+            <br>
+            {{ form.password }}
+        </table>
+
         <input class="btn btn-default" type="submit" value="Entrar" />
         <input type="hidden" name="next" value="{{ next }}" />
         <a class="btn btn-default" href="{% url 'register' %}">Registrar </a>

@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from GestionCO2.models import *
 from .forms import *
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
 from django.contrib.auth import login as do_login
 
 def empresa_lista(request):
@@ -62,3 +63,17 @@ def register(request):
                 do_login(request, user)
                 return redirect('/')
     return render(request, "registration/register.html", {'form': form})
+
+def register(request):
+    form = formularioregistroForm()
+    form.fields['username'].help_text = None
+    form.fields['password1'].help_text = None
+    form.fields['password2'].help_text = None
+    if request.method == 'POST':
+        form = formularioregistroForm(request.POST)     # create form object
+        if form.is_valid():
+            user=form.save()
+            if user is not None:
+                do_login(request, user)
+                return redirect('/')
+    return render(request, 'registration/register.html', {'form':form})
