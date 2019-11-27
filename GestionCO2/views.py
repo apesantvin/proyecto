@@ -4,6 +4,8 @@ from .forms import *
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.contrib.auth import login as do_login
+from django.contrib.auth.decorators import login_required
+
 
 def empresa_lista(request):
     datos = Empresa.objects.all().order_by('nombre_empresa')
@@ -35,6 +37,7 @@ def empresa_detalles(request,pk):
     empresa = get_object_or_404(Empresa, pk=pk)
     return render(request, 'GestionCO2/empresa_detalles.html', {'empresa': empresa})
 
+@login_required
 def añadir_empresa(request):
     if request.method == "POST":
         form = EmpresaForm(request.POST,request.FILES)
