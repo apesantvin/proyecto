@@ -35,12 +35,18 @@ def empresa_lista(request):
 def empresa_detalles(request,pk):
     empresa = get_object_or_404(Empresa, pk=pk)
     return render(request, 'GestionCO2/empresa_detalles_principales.html', {'empresa': empresa})
+<<<<<<< HEAD
 
+=======
+>>>>>>> 28ce163b24b969d91afeda0fc6b80c76bcf5b7b0
 @login_required
 def empresa_configuracion(request, pk):
     empresa = get_object_or_404(Empresa, pk=pk)
     return render(request, 'GestionCO2/empresa_configuracion.html', {'empresa': empresa})
+<<<<<<< HEAD
 
+=======
+>>>>>>> 28ce163b24b969d91afeda0fc6b80c76bcf5b7b0
 @login_required
 def empresa_configuracion_cambios(request, pk):
     empresa = get_object_or_404(Empresa, pk=pk)
@@ -74,27 +80,6 @@ def register(request):
                 do_login(request, user)
                 return redirect('/')
     return render(request, 'registration/register.html', {'form':form})
-
-@login_required
-def user_config(request):
-    return render(request, 'account/user_config.html')
-
-@login_required
-def change_password(request):
-    if request.method == 'POST':
-        form = PasswordChangeForm(request.user, request.POST)
-        if form.is_valid():
-            user = form.save()
-            update_session_auth_hash(request, user)  # Important!
-            messages.success(request, 'Tu cambio de contraseña ha sido un exito!!!')
-            return redirect('user_config')
-        else:
-            messages.error(request, 'Corrige los fallos.')
-    else:
-        form = PasswordChangeForm(request.user)
-    return render(request, 'account/change_password.html', {
-        'form': form
-    })
 
 def pagina_principal(request):
     return render(request, 'GestionCO2/pagina_principal.html')
