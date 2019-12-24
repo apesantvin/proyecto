@@ -1,0 +1,8 @@
+{% extends 'GestionCO2/empresa_detalles.html' %}
+
+{% block content_1 %}
+    <p> Añadir Datos con CSV </p>
+    <p> Añadir Datos manualmente </p>
+    <p> Ayuda </p>
+    <a class="btn btn-default" href="{% url 'empresa_configuracion_cambios' pk=empresa.pk %}">Configuración de la cuenta </a>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends 'GestionCO2/base.html' %}
+
+{% block content %}
+    <div class="contenedor">
+        <div class="baby_contenedor">
+            <div class="Calcular">
+                <div class="miniTitle">
+                    <h2>Calcular CO2</h2>
+                    <br /><br />
+                    <p> ¿Quieres saber cual es la huella hambiental de tu empresa de este mes?<p/> 
+                    <p> Dano unos pocos datos y calculamos tu emisión de CO2. FUNCIONA?</p>
+                </div>
+                <br /><br /><br />
+                <a class="btn btn-default" href="{% url 'empresa_lista' %}">Calcular </a>
+            </div>
+            <div class="Registrar">
+                <div class="miniTitle">
+                    <h2>Registrar Empresa</h2>
+                    <br /><br />
+                    <p> ¿Quieres conocer tu emisión de CO2 a tiempo real?.</p>
+                    <p> Registrate y podrás hacerlo. </p>
+                </div>
+                <a class="btn btn-default" href="{% url 'register' %}">Registrar </a>
+                <br/><br/>
+                <div class="miniTitle">
+                    <p> ¿Ya estas registrado? </p>
+                </div>
+                <a class="btn btn-default" href="{% url 'login' %}">Login </a>
+            </div>
+            <div class="VerEmpresas">
+                <div class="miniTitle">
+                    <h2>Ver Empresas</h2>
+                    <br /><br />
+                    <p> ¿Quieres conocer la emisión de CO2 de las empresas registradas?</p>
+                    <p> Aqui tienes la lista de las empresas.</p>
+                </div>
+                <br /><br /><br /><br />
+                <a class="btn btn-default" href="{% url 'empresa_lista' %}">Ver empresas </a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
