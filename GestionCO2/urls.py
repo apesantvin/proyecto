@@ -11,6 +11,4 @@ urlpatterns = [
     path('empresa/configuracion/cambios/<int:pk>/', views.empresa_configuracion_cambios, name='empresa_configuracion_cambios'),
     path('añadir_empresa/', views.añadir_empresa, name='añadir_empresa'),
     path('register', views.register, name='register'),
-    path('config', views.user_config, name='user_config'),
-    path('change_password', views.change_password, name='change_password'),
 ]+ static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
