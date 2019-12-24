@@ -34,7 +34,15 @@ def empresa_lista(request):
 
 def empresa_detalles(request,pk):
     empresa = get_object_or_404(Empresa, pk=pk)
-    return render(request, 'GestionCO2/empresa_detalles.html', {'empresa': empresa})
+    return render(request, 'GestionCO2/empresa_detalles_principales.html', {'empresa': empresa})
+@login_required
+def empresa_configuracion(request, pk):
+    empresa = get_object_or_404(Empresa, pk=pk)
+    return render(request, 'GestionCO2/empresa_configuracion.html', {'empresa': empresa})
+@login_required
+def empresa_configuracion_cambios(request, pk):
+    empresa = get_object_or_404(Empresa, pk=pk)
+    return render(request, 'GestionCO2/empresa_configuracion_cambios.html', {'empresa': empresa})
 
 @login_required
 def añadir_empresa(request):
@@ -64,3 +72,6 @@ def register(request):
                 do_login(request, user)
                 return redirect('/')
     return render(request, 'registration/register.html', {'form':form})
+
+def pagina_principal(request):
+    return render(request, 'GestionCO2/pagina_principal.html')
