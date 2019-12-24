@@ -15,7 +15,17 @@ body {
     font-family: 'Playfair Display', serif;
     margin:20px 0;
 }
-
+.top-menu{
+    float: right;
+    margin:5;
+    color:#000000;
+    font-family: 'Playfair Display', serif;
+    font-size:15;
+}
+.config a{
+    font-size:30;
+    float: right;
+}
 .titulo_pagina, .Listado_imagenes{
     text-align:center;
 }
@@ -44,6 +54,54 @@ form {
     margin: 0 auto;
     overflow:hidden;
 }
+.baby_contenedor{
+    background-color:#ffffff;
+    width:100%;
+    margin: 0 auto;
+    overflow:hidden;
+}
 .formulario_añadir{
     width: 400px;
+}
+.miniTitle h2{
+    font-family: 'Roboto', serif;
+    font-size: 30;
+}
+.miniTitle p{
+    font-family: 'Roboto', serif;
+    font-size: 15;
+}
+.Calcular{
+    float: left;
+    width: 30%;
+    height: 50%;
+    background-color:#c9ffe3;
+    text-align:center;
+    margin-right: 50;
+}
+.Registrar{
+    float: left;
+    width: 30%;
+    height: 50%;
+    background-color:#c9ffe3;
+    text-align:center;
+}
+.VerEmpresas{
+    float: right;
+    width: 30%;
+    height: 50%;
+    background-color:#c9ffe3;
+    text-align:center;
+}
+.EmpresaNombre{
+    width: 100%;
+    font-family: 'Playfair Display';
+    font-size: 50;
+    text-align: center;
+}
+.EmpresaDescripcion{
+    width: 100%;
+    font-family: "Roboto",sans-serif;
+    font-size: 15;
+    text-align: center;
 }

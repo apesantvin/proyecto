@@ -1,6 +1,18 @@
 {% extends 'GestionCO2/base.html' %}
 
 {% block content %}
-    <img src="/media/{{empresa.logo}}" width="40" height="30"/>
-    {{empresa.nombre_empresa}}
+    <div class="config">
+        {% if user == empresa.usuario %}
+            <a href="{% url 'empresa_configuracion' pk=empresa.pk %}" class="top-menu"><span class="glyphicon glyphicon-cog"></span></a>
+        {% endif %}
+    </div>
+    <div class="EmpresaNombre">
+        <a href="{% url 'empresa_detalles' pk=empresa.pk %}"><img src="/media/{{empresa.logo}}" width="200" height="200"/></a>
+        {{empresa.nombre_empresa}}
+    </div>
+    <br />
+    <div class="Detalles">
+        {% block content_1 %}
+        {% endblock %}
+    </div>
 {% endblock %}
