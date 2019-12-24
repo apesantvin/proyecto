@@ -35,18 +35,12 @@ def empresa_lista(request):
 def empresa_detalles(request,pk):
     empresa = get_object_or_404(Empresa, pk=pk)
     return render(request, 'GestionCO2/empresa_detalles_principales.html', {'empresa': empresa})
-<<<<<<< HEAD
 
-=======
->>>>>>> 28ce163b24b969d91afeda0fc6b80c76bcf5b7b0
 @login_required
 def empresa_configuracion(request, pk):
     empresa = get_object_or_404(Empresa, pk=pk)
     return render(request, 'GestionCO2/empresa_configuracion.html', {'empresa': empresa})
-<<<<<<< HEAD
 
-=======
->>>>>>> 28ce163b24b969d91afeda0fc6b80c76bcf5b7b0
 @login_required
 def empresa_configuracion_cambios(request, pk):
     empresa = get_object_or_404(Empresa, pk=pk)
