@@ -39,7 +39,14 @@ def empresa_detalles(request,pk):
 @login_required
 def empresa_configuracion(request, pk):
     empresa = get_object_or_404(Empresa, pk=pk)
-    return render(request, 'GestionCO2/empresa_configuracion.html', {'empresa': empresa})
+    if request.method=='POST':
+        form = leercsv(request.POST,request.FILES)
+        if form.is_valid():
+            CSV=form.save(commit=False)
+            return redirect('empresa_detalles', pk=empresa.pk)
+    else:
+        form = leercsv()
+    return render(request, 'GestionCO2/empresa_configuracion.html', {'empresa': empresa,'form': form})
 
 @login_required
 def empresa_configuracion_cambios(request, pk):

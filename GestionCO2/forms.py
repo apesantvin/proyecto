@@ -15,6 +15,9 @@ class EmpresaForm(forms.ModelForm):
             'correo',
             'permitido_publicar')
         
+class leercsv(forms.Form):
+    CSV=forms.FileField(required=False)
+        
 class formularioregistroForm(UserCreationForm):
     email = forms.EmailField(required = True)
     first_name = forms.CharField(required = False)

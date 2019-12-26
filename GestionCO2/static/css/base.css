@@ -48,6 +48,15 @@ form {
     border: 1px solid #CCC;
     border-radius: 1em;
 }
+.formulario_csv{
+    /* Sólo para centrar el formulario a la página */
+    margin: 0;
+    width: -275px;
+    /* Para ver el borde del formulario */
+    padding: 0em;
+    border: 0px solid #CCC;
+    border-radius: 0em;
+}
 .contenedor{
     background-color:#ffffff;
     width:90%;

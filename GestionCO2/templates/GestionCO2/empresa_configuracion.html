@@ -2,6 +2,10 @@
 
 {% block content_1 %}
     <p> Añadir Datos con CSV </p>
+    <form  role="form2" class="formulario_csv" enctype="multipart/form-data" action="." method="POST"> 
+        {% csrf_token %}
+        {{ form.as_p }}
+    </form>
     <p> Añadir Datos manualmente </p>
     <p> Ayuda </p>
     <a class="btn btn-default" href="{% url 'empresa_configuracion_cambios' pk=empresa.pk %}">Configuración de la cuenta </a>
