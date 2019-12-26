@@ -72,7 +72,7 @@ def register(request):
             user=form.save()
             if user is not None:
                 do_login(request, user)
-                return redirect('/')
+                return redirect('pagina_principal')
     return render(request, 'registration/register.html', {'form':form})
 
 def pagina_principal(request):

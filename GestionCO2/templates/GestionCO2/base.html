@@ -15,7 +15,6 @@
         <body>
             <div class="page-header">
                 {% if user.is_authenticated %}
-                    <a href="{% url 'user_config' %}" class="top-menu"><span class="glyphicon glyphicon-cog"></span></a>
                     <a href="{% url 'añadir_empresa' %}" class="top-menu"><span class="glyphicon glyphicon-plus"></span></a>
                     <a class="top-menu" href="{% url 'logout' %}">Salir de la cuenta</a>
                 {% else %}
