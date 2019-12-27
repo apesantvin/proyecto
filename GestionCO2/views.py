@@ -54,6 +54,16 @@ def empresa_configuracion_cambios(request, pk):
     return render(request, 'GestionCO2/empresa_configuracion_cambios.html', {'empresa': empresa})
 
 @login_required
+def añadir_datos_empresa(request, pk):
+    empresa = get_object_or_404(Empresa, pk=pk)
+    return render(request, 'GestionCO2/añadir_datos_empresa.html', {'empresa': empresa})
+
+def mensajes(request, pk):
+    e = get_object_or_404(Empresa, pk=pk)
+    lista_mensajes = Mensaje.objects.filter(empresa=e)
+    return render(request, 'GestionCO2/mensajes.html',  {'empresa': e, 'lista_mensajes':lista_mensajes})
+
+@login_required
 def añadir_empresa(request):
     if request.method == "POST":
         form = EmpresaForm(request.POST,request.FILES)
@@ -66,7 +76,124 @@ def añadir_empresa(request):
             return redirect('empresa_detalles', pk=empresa.pk)
     else:
         form = EmpresaForm()
-    return render(request, 'GestionCO2/añadir_empresa.html', {'form': form})
+    return render(request, 'GestionCO2/añadir_empresa.html', {'form': form} )
+
+
+def añadir_personal(request, pk):
+    empresa = get_object_or_404(Empresa, pk=pk)
+    error='Error'
+    if request.method == "POST":
+        form = PersonalEmpresaForm(request.POST,request.FILES)
+        if form.is_valid():
+            personal = form.save(commit=False)
+            personal.empresa=empresa
+            personal.save()
+            return redirect('añadir_personal', pk=empresa.pk)
+    else:
+        form = PersonalEmpresaForm()
+    return render(request, 'GestionCO2/añadir_datos_html.html', {'form': form, 'empresa': empresa, 'title':'Personal', 'error':error})
+
+def añadir_edificio(request, pk):
+    empresa = get_object_or_404(Empresa, pk=pk)
+    error='Error'
+    if request.method == "POST":
+        form = EdificioEmpresaForm(request.POST,request.FILES)
+        if form.is_valid():
+            edificio = form.save(commit=False)
+            edificio.empresa=empresa
+            edificio.save()
+            return redirect('añadir_edificio', pk=empresa.pk)
+    else:
+        form = EdificioEmpresaForm()
+    return render(request, 'GestionCO2/añadir_datos_html.html', {'form': form, 'empresa': empresa, 'title':'Edificio', 'error':error, 'error':error})
+
+def añadir_vehiculo(request, pk):
+    empresa = get_object_or_404(Empresa, pk=pk)
+    error='Error'
+    if request.method == "POST":
+        form = VehiculoEdificioForm(request.POST,request.FILES)
+        if form.is_valid():
+            vehiculo = form.save(commit=False)
+            vehiculo.empresa=empresa
+            vehiculo.save()
+            return redirect('añadir_vehiculo', pk=empresa.pk)
+    else:
+        form = VehiculoEdificioForm()
+    return render(request, 'GestionCO2/añadir_datos_html.html', {'form': form, 'empresa': empresa, 'title':'Vehículo', 'error':error})
+
+def añadir_generador(request, pk):
+    e = get_object_or_404(Empresa, pk=pk)
+    edificios = Edificio.objects.filter(empresa=e)
+    error='Error'
+    if request.method == "POST":
+        form = GeneradorEdificioForm(request.POST,request.FILES)
+        if form.is_valid():
+            generador = form.save(commit=False)
+            if generador.edificio in edificios:
+                generador.save()
+                return redirect('añadir_generador', pk=e.pk)
+            else:
+                error='No tienes dominio sobre el edificio. No pertenece a la empresa '
+    else:
+        form = GeneradorEdificioForm()
+    return render(request, 'GestionCO2/añadir_datos_html.html', {'form': form, 'empresa': e, 'title':'consumo de Generador', 'error':error})
+
+def añadir_viaje(request, pk):
+    e = get_object_or_404(Empresa, pk=pk)
+    error = 'Error'
+    personales = Personal.objects.filter(empresa=e)
+    if request.method == "POST":
+        form = ViajeEdificioForm(request.POST,request.FILES)
+        if form.is_valid():
+            viaje = form.save(commit=False)
+            for p in viaje.personal:
+                if p in personales:
+                    viaje.save()
+                    return redirect('añadir_viaje', pk=e.pk)
+                else:
+                    error ='No tienes dominio sobre el personal. Al menos uno no pertenece a la empresa '
+    else:
+        form = ViajeEdificioForm()
+    return render(request, 'GestionCO2/añadir_datos_html.html', {'form': form, 'empresa': e, 'title':'consumo de Viaje', 'error':error})
+
+def añadir_edificioconsumo(request, pk):
+    e = get_object_or_404(Empresa, pk=pk)
+    error = 'Error'
+    edificios = Edificio.objects.filter(empresa=e)
+    if request.method == "POST":
+        form = EdificioConsumoEForm(request.POST,request.FILES)
+        if form.is_valid():
+            edificioconsumo = form.save(commit=False)
+            if edificioconsumo.edificio in edificios:
+                edificioconsumo.save()
+                return redirect('añadir_edificioconsumo', pk=e.pk)
+            else:
+                error ='No tienes dominio sobre el edificio. Al menos uno no pertenece a la empresa '
+    else:
+        form = EdificioConsumoEForm()
+    return render(request, 'GestionCO2/añadir_consumo_edificio.html', {'form': form, 'empresa': e, 'title':'consumo de Edificio', 'error':error})
+
+def añadir_vehiculoconsumo(request, pk):
+    e = get_object_or_404(Empresa, pk=pk)
+    error = 'Error'
+    personales = Personal.objects.filter(empresa=e)
+    vehiculos = Vehiculo.objects.filter(empresa=e)
+    if request.method == "POST":
+        form = VehiculoConsumoEForm(request.POST,request.FILES)
+        if form.is_valid():
+            vehiculoconsumo = form.save(commit=False)
+            if vehiculoconsumo.vehiculo in vehiculos:
+                for p in vehiculoconsumo.personal:
+                    if p in personales:
+                        vehiculoconsumo.save()
+                        return redirect('añadir_edificioconsumo', pk=e.pk)
+                    else:
+                        error ='No tienes dominio sobre el personal. Al menos uno no pertenece a la empresa '
+            else:
+                error = error + 'No tienes dominio sobre el vehiculo. No pertenece a la empresa '
+    else:
+        form = VehiculoConsumoEForm()
+    return render(request, 'GestionCO2/añadir_consumo_edificio.html', {'form': form, 'empresa': e, 'title':'consumo de Vehiculo', 'error':error})
 
 def register(request):
     form = formularioregistroForm()

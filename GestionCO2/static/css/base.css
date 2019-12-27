@@ -100,6 +100,10 @@ form {
     height: 0.5%;
     box-sizing: border-box;
 }
+.Espacio4{
+    height: 7%;
+    box-sizing: border-box;
+}
 
 .Calcular{
     float: left;
@@ -130,6 +134,74 @@ form {
     font-family: "Roboto",sans-serif;
     font-size: 15;
     text-align: center;
+}
+
+.user-config{
+    width: 30%;
+    float: left;
+}
+
+.user-config a{
+    color:#000000;
+    font-family: "Roboto",sans-serif;
+    font-size: 15;
+}
+
+.formulario{
+    width: 70%;
+    float: right;
+    text-align: center;
+}
+
+.Error{
+    color:red;
+}
+
+.SAVE a{
+    float: right;
+}
+
+.expertos{
+    float: right;
+    width: 70%;
+}
+.expertos p{
+    float: right;
+    font-size: 50px;
+    color: #000000;
+    margin-left: 10px;
+}
+
+.mensaje{
+    float: left;
+    width:90%;
+}
+.mensaje p{
+    float: left;
+    font-size: 60px;
+    color: #000000;
+    margin-right: 10px;
+}
+
+.texto h5{
+    float: left;
+    font-size: 20px;
+    color: #000000;
+    margin-bottom: 10px;
+}
+
+
+.texto p{
+    text-align: left;
+    font-size: 15px;
+    color: #000000;
+}
+
+.texto-expertos p{
+    width:80%;
+    text-align: right;
+    font-size: 13px;
+    color: #000000;
 }
 
 @media screen and (max-width: 800px){

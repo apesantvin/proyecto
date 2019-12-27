@@ -1,0 +1,34 @@
+{% extends 'GestionCO2/añadir_datos_empresa.html' %}
+
+{% block content_2 %}
+    <div class='titulo_pagina'>
+        <h2>Añadir {{title}}</h2>
+    </div>
+    {% if error != 'Error' %}
+        <div class="Error">
+            <p>{{error}}<strong>{{empresa.nombre_empresa}}</strong></p>
+        </div>
+    {% endif %}
+    <form  role="form" class="formulario_añadir" enctype="multipart/form-data" action="." method="POST">
+        {% csrf_token %}
+        {% if form.errors %}
+            <div class="Error">
+                <p>Este usuario ya está cogido, elija otro, o las contraseñas no coinciden, intentelo de nuevo:</p>
+            </div>
+        {% endif %}
+        <br>
+        {{ form.as_p }}
+        <label for="id_cantidad">Cantidad Consumida:</label>
+        <input type="number" name="cantidad" id="id_cantidad">
+        <br>
+        <label for="id_fecha">Fecha del consumo:</label>
+        <input type="date" name="fecha" required="" id="id_fecha">
+        <br>
+    </form>
+    <div class="SAVE">
+        <a><input class="btn btn-default" type="submit" value="Save" /></a>
+    </div>
+    <br/><br/>
+    <hr/>  
+{% endblock %}
+ 
