@@ -51,42 +51,6 @@ class GeneradorEdificioForm(forms.ModelForm):
             'cantidad_generada',
             'fecha_generacion')
 
-class ViajeEdificioForm(forms.ModelForm):
-    class Meta:
-        model = Viaje
-        fields = (
-            'fecha_viaje',
-            'personal',
-            'distancia',
-            'transporte',
-            'noches_hotel')
-
-class EdificioConsumoEForm(forms.ModelForm):
-    cantidad = models.IntegerField()
-    fecha= models.DateField('Fecha del consumo')
-    class Meta:
-        model = EdificioConsumo
-        fields = (
-            'edificio',
-            'tipo')
-    def save(self, commit = True):
-        consumo=Consumo()
-        consumo.cantidad_consumida=self.cleaned_data.get('cantidad')
-        consumo.fecha_consumo=self.cleaned_data.get('fecha')
-        
-class VehiculoConsumoEForm(forms.ModelForm):
-    cantidad = models.IntegerField()
-    fecha= models.DateField('Fecha del consumo')
-    class Meta:
-        model = VehiculoConsumo
-        fields = (
-            'personal',
-            'vehiculo',
-            'tipo')
-    def save(self, commit = True):
-        consumo=Consumo()
-        consumo.cantidad_consumida=self.cleaned_data.get('cantidad')
-        consumo.fecha_consumo=self.cleaned_data.get('fecha')
 
 class formularioregistroForm(UserCreationForm):
     email = forms.EmailField(required = True)

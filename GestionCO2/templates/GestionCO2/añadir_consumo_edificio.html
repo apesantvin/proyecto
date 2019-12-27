@@ -11,12 +11,6 @@
     {% endif %}
     <form  role="form" class="formulario_añadir" enctype="multipart/form-data" action="." method="POST">
         {% csrf_token %}
-        {% if form.errors %}
-            <div class="Error">
-                <p>Este usuario ya está cogido, elija otro, o las contraseñas no coinciden, intentelo de nuevo:</p>
-            </div>
-        {% endif %}
-        <br>
         {{ form.as_p }}
         <label for="id_cantidad">Cantidad Consumida:</label>
         <input type="number" name="cantidad" id="id_cantidad">
@@ -24,10 +18,8 @@
         <label for="id_fecha">Fecha del consumo:</label>
         <input type="date" name="fecha" required="" id="id_fecha">
         <br>
+        <button type="submit" class="save btn btn-default">Save</button>
     </form>
-    <div class="SAVE">
-        <a><input class="btn btn-default" type="submit" value="Save" /></a>
-    </div>
     <br/><br/>
     <hr/>  
 {% endblock %}
