@@ -17,6 +17,13 @@ class EmpresaForm(forms.ModelForm):
 class leercsv(forms.Form):
     CSV=forms.FileField(required=False)
 
+class mensajeForm(forms.ModelForm):
+    class Meta:
+        model = Mensaje
+        fields = (
+            'titulo',
+            'texto')
+
 class PersonalEmpresaForm(forms.ModelForm):
     class Meta:
         model = Personal

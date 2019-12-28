@@ -16,5 +16,7 @@ urlpatterns = [
     path('añadir_generador/<int:pk>/', views.añadir_generador, name='añadir_generador'),
     path('añadir_empresa/', views.añadir_empresa, name='añadir_empresa'),
     path('mensajes/<int:pk>/', views.mensajes, name='mensajes'),
+    path('mensaje/<int:pk>/<int:mensajePK>', views.mensaje_detalles, name='mensaje_detalles'),
+    path('añadir_mensaje/<int:pk>/', views.añadir_mensaje, name='añadir_mensaje'),
     path('register', views.register, name='register'),
 ]+ static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)

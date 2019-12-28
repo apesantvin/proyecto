@@ -63,7 +63,25 @@ def mensajes(request, pk):
     e = get_object_or_404(Empresa, pk=pk)
     lista_mensajes = Mensaje.objects.filter(empresa=e)
     return render(request, 'GestionCO2/mensajes.html',  {'empresa': e, 'lista_mensajes':lista_mensajes})
-
+@login_required
+def mensaje_detalles(request, pk, mensajePK):
+    e = get_object_or_404(Empresa, pk=pk)
+    m = get_object_or_404(Mensaje, pk=mensajePK)
+    return render(request, 'GestionCO2/mensaje_detalles.html',  {'empresa': e, 'm' : m})
+@login_required
+def añadir_mensaje(request, pk):
+    e = get_object_or_404(Empresa, pk=pk)
+    if request.method == "POST":
+        form = mensajeForm(request.POST)
+        if form.is_valid():
+            mensaje = form.save(commit=False)
+            mensaje.empresa = e
+            mensaje.fecha_publicacion=timezone.now()
+            mensaje.preguntar()
+            return redirect('mensajes', pk=e.pk)
+    else:
+        form = mensajeForm()
+    return render(request, 'GestionCO2/añadir_mensaje.html', {'empresa': e, 'form':form})
 @login_required
 def añadir_empresa(request):
     if request.method == "POST":
