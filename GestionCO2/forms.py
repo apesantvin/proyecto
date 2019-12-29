@@ -43,6 +43,9 @@ class VehiculoEdificioForm(forms.ModelForm):
             'fecha_compra')
 
 class GeneradorEdificioForm(forms.ModelForm):
+    def __init__(self, edificios_lit, *args, **kwargs):
+        super(GeneradorEdificioForm, self).__init__(*args, **kwargs)
+        self.fields['edificio'] = forms.ChoiceField(choices=tuple([(name, name) for name in edificios_lit]))
     class Meta:
         model = Generador
         fields = (
@@ -51,6 +54,13 @@ class GeneradorEdificioForm(forms.ModelForm):
             'cantidad_generada',
             'fecha_generacion')
 
+class GeneradorEdificioForm2(forms.ModelForm):
+
+    class Meta:
+        model = Generador
+        fields = (
+            'edificio',
+            )
 
 class formularioregistroForm(UserCreationForm):
     email = forms.EmailField(required = True)

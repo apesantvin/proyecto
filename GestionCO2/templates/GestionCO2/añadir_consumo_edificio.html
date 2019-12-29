@@ -12,6 +12,9 @@
     <form  role="form" class="formulario_añadir" enctype="multipart/form-data" action="." method="POST">
         {% csrf_token %}
         {{ form.as_p }}
+        <label for="id_edificio">Edificio:</label>
+        
+        <br>
         <label for="id_cantidad">Cantidad Consumida:</label>
         <input type="number" name="cantidad" id="id_cantidad">
         <br>
