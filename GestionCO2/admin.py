@@ -11,4 +11,5 @@ admin.site.register(EdificioConsumo)
 admin.site.register(VehiculoConsumo)
 admin.site.register(Mensaje)
 admin.site.register(Respuesta)
+admin.site.register(Experto)
 # Register your models here.

@@ -189,11 +189,45 @@ form {
     float: left;
 }
 .texto a{
+    height: 30;
     float: left;
     font-size: 20px;
     color: #000000;
 }
 
+.empresa a{
+    height: 30;
+    float: left;
+    font-size: 15px;
+    color: #000000;
+}
+.visto p{
+     float: right;
+}
+.experto-config{
+    width: 20%;
+    float: left;
+}
+
+.experto-config a{
+    color:#000000;
+    font-family: "Roboto",sans-serif;
+    font-size: 15;
+}
+.mensajes-expertos{
+    width: 80%;
+    float: right;
+    text-align: center;
+    padding: 1em;
+    border: 1px solid #CCC;
+    border-radius: 1em;
+}
+.experto-lista{
+    float: left;
+}
+.aceptar-expertos{
+    float: right;
+}
 
 .texto p{
     text-align: left;

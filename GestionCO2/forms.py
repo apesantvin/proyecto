@@ -80,3 +80,14 @@ class formularioregistroForm(UserCreationForm):
             user.save()
 
         return user
+
+class RespuestaForm(forms.ModelForm):
+    class Meta:
+        model = Respuesta
+        fields = (
+            'texto',)
+
+class ExpertoForm(forms.ModelForm):
+    class Meta:
+        model = Experto
+        fields = ()

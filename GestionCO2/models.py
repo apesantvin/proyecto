@@ -129,7 +129,7 @@ class Mensaje (models.Model):
     titulo = models.CharField(max_length=200)        
     texto = models.TextField()        
     fecha_publicacion_mensaje = models.DateTimeField(default=timezone.now)        
-    respondido =models.IntegerField(default=0)
+    respondido = models.IntegerField(default=0)
     
     def responder(self):
         self.respondido = 1
@@ -149,3 +149,15 @@ class Respuesta(models.Model):
 
     def __str__(self):
         return self.texto
+
+class Experto(models.Model):
+    usuario = models.ForeignKey('auth.User',on_delete=models.CASCADE)
+    id_usuario = models.IntegerField(default=0, unique=True)
+    autorizado = models.IntegerField(default=0)
+    
+    def autorizar(self):
+        self.autorizado = 1
+        self.save()
+    
+    def __str__(self):
+        return str(self.usuario)

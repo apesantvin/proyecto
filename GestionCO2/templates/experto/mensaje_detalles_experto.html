@@ -1,0 +1,31 @@
+{% extends 'GestionCO2/base.html' %}
+
+{% block content %}
+    <div class="mensaje">
+        <div class="usuario">
+            <p class="glyphicon glyphicon-user"></p>
+        </div>
+        <div class="texto">
+            <a><strong> {{m.titulo}} </a></strong>
+            <div class="Espacio4"></div>
+            <div class="empresa">
+                <a href="{% url 'mensajes_empresa' pk=m.empresa.pk %}">{{m.empresa}}</a>
+            </div>
+            <div class="Espacio4"></div>
+            <p> {{m.texto}} </p>
+        </div>
+    </div>
+    <div class="Espacio2"></div>
+    {% if m.respondido == 1%}
+        <div class="expertos">
+            <p class="glyphicon glyphicon-user"></p>
+            {% for respuesta in m.respuestas.all %}
+                <div class="texto-expertos">
+                    <h5><strong>Respuesta</strong></h5>
+                    <p> {{respuesta.texto}} </p>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    <br/><br/><br/>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends 'GestionCO2/base.html' %}
+
+{% block content %}
+    <div class='experto-config'>
+        <a href="{% url 'mensajes_todos_experto' %}"> Ver lista completa de mensajes</a>
+        <br/><p>(Respondidos y no respondidos) </p>
+        <br/><br/>
+        <a href="{% url 'mensajes_experto' %}"> Ver solo mensaje no respondidos </a>
+        <br/><br/><br/>
+        {% if user.is_superuser%}
+            <a href="{% url 'lista_expertos_añadir' %}"> Añadir expertos </a>
+        {% endif %}
+    </div>
+    <div class='mensajes-expertos'>
+        {% block content_2 %}
+        {% endblock %}
+    </div>
+    <br/><br/>
+    <hr/>
+{% endblock %}

@@ -1,0 +1,10 @@
+{% extends 'GestionCO2/base.html' %}
+
+{% block content %}
+    {% if experto == 1%}
+        <p> Usted no goza de una cuenta de experto. ¡Sentimos las molestias! </p>
+        <p>Si quiere hacerse experto <a href="{% url 'ask_for_experto' %}" >pulse aquí</a> para solicitarlo.</p>
+    {% else %}
+        <p> Usted ha solicitado ser experto. Debe esperar a ser autorizado por los Administradores del Gestionador CO2.</p>
+    {% endif %}
+{% endblock %}

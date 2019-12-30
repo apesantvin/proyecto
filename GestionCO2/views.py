@@ -5,6 +5,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.contrib.auth import login as do_login
 from django.contrib.auth.decorators import login_required
+import sqlite3
 
 def empresa_lista(request):
     datos = Empresa.objects.all().order_by('nombre_empresa')
@@ -159,8 +160,6 @@ def añadir_generador(request, pk):
         form = GeneradorEdificioForm()
     return render(request, 'GestionCO2/añadir_datos_html.html', {'form': form, 'empresa': e, 'title':'consumo de Generador', 'error':error})
 
-
-@login_required
 def register(request):
     form = formularioregistroForm()
     form.fields['username'].help_text = None
@@ -177,3 +176,84 @@ def register(request):
 
 def pagina_principal(request):
     return render(request, 'GestionCO2/pagina_principal.html')
+
+def mensajes_experto(request):
+    lista_mensajes = Mensaje.objects.filter(respondido=0)
+    explicacion='Aqui podras ver los mensajes que han mandado las empresas y todavía estan sin responder. Pulsando en cada uno de ellos, podrás responder a dicho mensaje. '
+    return render(request, 'experto/inicio_experto.html',  {'lista_mensajes':lista_mensajes, 'add':explicacion})
+        
+
+def experto_mensaje(request, mensajePK):
+    mensaje = get_object_or_404(Mensaje, pk=mensajePK)
+    if request.method == "POST":
+        form = RespuestaForm(request.POST)
+        if form.is_valid():
+            respuesta = form.save(commit=False)
+            respuesta.mensaje = mensaje
+            respuesta.fecha_publicacion_respuesta=timezone.now()
+            respuesta.save()
+            mensaje.responder()
+            return redirect('mensaje_detalles_experto', mensajePK=mensaje.pk)
+    else:
+        form = RespuestaForm()
+    return render(request, 'experto/experto_mensaje.html',  {'form': form, 'm':mensaje})
+
+def mensaje_detalles_experto(request, mensajePK):
+    m = get_object_or_404(Mensaje, pk=mensajePK)
+    return render(request, 'experto/mensaje_detalles_experto.html',  {'m' : m})
+
+def ask_for_experto(request):
+    form = ExpertoForm(request.POST,request.FILES)
+    if form.is_valid():
+        experto = form.save(commit=False)
+        experto.usuario = request.user
+        experto.id_usuario = request.user.id
+        experto.save()
+    return (mensajes_todos_experto(request))
+
+def add_experto(request, expertoPK):
+    experto = get_object_or_404(Experto, pk=expertoPK)
+    experto.autorizar()
+    lista_expertos = Experto.objects.filter(autorizado=0)
+    return render(request, 'experto/lista_expertos_añadir.html',  {'lista_expertos':lista_expertos})
+
+def mensajes_empresa(request, pk):
+    empresa = get_object_or_404(Empresa, pk=pk)
+    lista_mensajes = Mensaje.objects.filter(empresa=empresa)
+    explicacion='Aqui podras ver los mensajes que han mandado la empresa '+str(empresa)+'. Pulsando en cada uno de ellos, podrás ver la respuesta en caso de que tenga, caso contrario podrás responder al mensaje.'
+    return render(request, 'experto/lista_mensajes_empresa.html',  {'lista_mensajes':lista_mensajes, 'add':explicacion})
+
+def lista_expertos_añadir(request):
+    lista_expertos = Experto.objects.filter(autorizado=0)
+    return render(request, 'experto/lista_expertos_añadir.html',  {'lista_expertos':lista_expertos})
+    
+def mensajes_todos_experto(request):
+    no_experto=0;
+    lista_expertos = Experto.objects.all()
+    if lista_expertos.exists():
+        for l in lista_expertos:
+            if request.user.id == l.id_usuario:
+                if l.autorizado==0:
+                    no_experto=0;
+                    return render(request, 'experto/base_base_experto.html', {'experto':no_experto})
+                else:
+                    no_experto=0;
+                    lista_mensajes = Mensaje.objects.all()
+                    explicacion='Aqui podras ver los mensajes que han mandado las empresas que ya están respondidos. '
+                    return render(request, 'experto/inicio_experto.html',  {'lista_mensajes':lista_mensajes, 'add':explicacion})
+            else:
+                if request.user.is_superuser:
+                    lista_mensajes = Mensaje.objects.all()
+                    explicacion='Aqui podras ver los mensajes que han mandado las empresas que ya están respondidos. '
+                    return render(request, 'experto/inicio_experto.html',  {'lista_mensajes':lista_mensajes, 'add':explicacion})
+                else:
+                    no_experto=1;
+    else:
+        if request.user.is_superuser:
+            lista_mensajes = Mensaje.objects.all()
+            explicacion='Aqui podras ver los mensajes que han mandado las empresas que ya están respondidos. '
+            return render(request, 'experto/inicio_experto.html',  {'lista_mensajes':lista_mensajes, 'add':explicacion})
+        else:
+            no_experto=1;
+    if no_experto==1:
+        return render(request, 'experto/base_base_experto.html', {'experto':no_experto})

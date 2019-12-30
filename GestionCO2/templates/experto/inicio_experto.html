@@ -1,0 +1,38 @@
+{% extends 'experto/base_experto.html' %}
+
+{% block content_2 %}
+    <p> {{add}}Si pulsas en el nombre de una empresa, podrás ver todos los mensajes que ha mandado esta empresa.</p>
+    <br/>
+    {% for m in lista_mensajes %}
+        <div class="mensaje">
+            <div class="usuario">
+                <p class="glyphicon glyphicon-user"></p>
+            </div>
+            <div class="texto">
+                {% if m.respondido == 1%}
+                    <a href="{% url 'mensaje_detalles_experto' mensajePK=m.pk %}"><strong> {{m.titulo}} </strong></a>
+                    <div class="Espacio4"></div>
+                    <div class="empresa">
+                        <a href="{% url 'mensajes_empresa' pk=m.empresa.pk %}">{{m.empresa}}</a>
+                    </div>
+                    <div class="Espacio4"></div>
+                    <p> {{m.texto}} </p>
+                    <div class='visto'><p> Respondido </p></div>
+                {% else %}
+                    <a href="{% url 'experto_mensaje' mensajePK=m.pk %}"><strong> {{m.titulo}} </strong></a>
+                    <div class="Espacio4"></div>
+                    <div class="empresa">
+                        <a href="{% url 'mensajes_empresa' pk=m.empresa.pk %}">{{m.empresa}}</a>
+                    </div>
+                    <div class="Espacio4"></div>
+                    <p> {{m.texto}} </p>
+                {% endif %}
+                <div class="Espacio4"></div>
+            </div>
+        </div>
+    {% empty %}
+        <p> No hay mensajes </p>
+    {% endfor %}
+{% endblock %}
+
+
