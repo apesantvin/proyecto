@@ -70,10 +70,10 @@ class ViajeForm(forms.ModelForm):
         model = Viaje
         fields = (
             'personal',
-            'fecha_viaje',
             'distancia',
             'transporte',
-            'noches_hotel'
+            'noches_hotel',
+            'fecha_viaje',
             )
 
 class formularioregistroForm(UserCreationForm):
