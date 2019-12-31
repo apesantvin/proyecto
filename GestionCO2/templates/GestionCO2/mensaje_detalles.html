@@ -1,0 +1,31 @@
+{% extends 'GestionCO2/empresa_detalles.html' %}
+
+{% block content_1 %}
+    <div class="mensaje">
+        <div class="usuario">
+            <p class="glyphicon glyphicon-user"></p>
+        </div>
+        <div class="texto">
+            <a><strong> {{m.titulo}} </a></strong>
+            <div class="Espacio4"></div>
+            <p> {{m.texto}} </p>
+        </div>
+    </div>
+    <div class="Espacio2"></div>
+    {% if m.respondido == 1%}
+        <div class="expertos">
+            <p class="glyphicon glyphicon-user"></p>
+            {% for respuesta in m.respuestas.all %}
+                <div class="texto-expertos">
+                    <h5><strong>EXPERTOS</strong></h5>
+                    <p> {{respuesta.texto}} </p>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="texto-expertos">
+            <p>No ha obtenido respuesta de nungún experto todavía</p>
+        </div>
+    {% endif %}
+    <br/><br/><br/>
+{% endblock %}

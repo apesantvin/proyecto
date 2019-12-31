@@ -101,7 +101,7 @@ form {
     box-sizing: border-box;
 }
 .Espacio4{
-    height: 7%;
+    height: 5%;
     box-sizing: border-box;
 }
 
@@ -163,7 +163,7 @@ form {
 
 .expertos{
     float: right;
-    width: 70%;
+    width: 85%;
 }
 .expertos p{
     float: right;
@@ -173,23 +173,61 @@ form {
 }
 
 .mensaje{
-    float: left;
-    width:90%;
+    float: right;
+    width:95%;
 }
-.mensaje p{
+
+.usuario{
+    width:60px;
     float: left;
     font-size: 60px;
     color: #000000;
-    margin-right: 10px;
+    margin-right: 2%;
 }
-
-.texto h5{
+.texto{
+    width:83%;
+    float: left;
+}
+.texto a{
+    height: 30;
     float: left;
     font-size: 20px;
     color: #000000;
-    margin-bottom: 10px;
 }
 
+.empresa a{
+    height: 30;
+    float: left;
+    font-size: 15px;
+    color: #000000;
+}
+.visto p{
+     float: right;
+}
+.experto-config{
+    width: 20%;
+    float: left;
+}
+
+.experto-config a{
+    color:#000000;
+    font-family: "Roboto",sans-serif;
+    font-size: 15;
+}
+.mensajes-expertos{
+    width: 80%;
+    float: right;
+    text-align: center;
+    padding: 1em;
+    border: 1px solid #CCC;
+    border-radius: 1em;
+}
+.experto-lista{
+    float: left;
+}
+.aceptar-expertos{
+    float: right;
+}
 
 .texto p{
     text-align: left;
@@ -198,10 +236,26 @@ form {
 }
 
 .texto-expertos p{
-    width:80%;
+    width:85%;
     text-align: right;
     font-size: 13px;
     color: #000000;
+}
+
+.texto-expertos h5{
+    float: right;
+    font-size: 20px;
+    color: #000000;
+}
+
+
+.Añadir_mensaje{
+    width:95%;
+    text-align: right;
+}
+.post-form, .post-form{
+    width:450px;
+    float: center;
 }
 
 @media screen and (max-width: 800px){

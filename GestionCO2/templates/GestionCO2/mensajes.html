@@ -1,29 +1,23 @@
-var r;
-
 {% extends 'GestionCO2/empresa_detalles.html' %}
 
 {% block content_1 %}
     <p> Aqui podras ver los mensajes que te has mandado con los expertos en emisiones CO2 con preguntas sobre como reducir tu consumo. Pulsando en hacer pregunta podrás hacer una nueva pregunta a uno de nuestros expertos.</p>
     <br/>
+    <div class="Añadir_mensaje">
+        <a href="{% url 'añadir_mensaje' pk=empresa.pk %}" class="save btn btn-default">Enviar Mensaje a un experto</a>
+    </div>
     {% for m in lista_mensajes %}
         <div class="mensaje">
-            <p class="glyphicon glyphicon-user"></p>
+            <div class="usuario">
+                <p class="glyphicon glyphicon-user"></p>
+            </div>
             <div class="texto">
-                <h5> {{m.titulo}} </h5>
+                <a href="{% url 'mensaje_detalles' pk=empresa.pk mensajePK=m.pk %}"><strong> {{m.titulo}} </a></strong>
                 <div class="Espacio4"></div>
                 <p> {{m.texto}} </p>
+                <div class="Espacio4"></div>
             </div>
         </div>
-        {% if m.respondido == 1%}
-            r=Respuesta.objects.get(mensaje=m)
-            <div class="Espacio2"></div>
-            <div class="expertos">
-                <p class="glyphicon glyphicon-bookmark"></p>
-                <div class="texto-expertos">
-                    <p> {{r.texto}} </p>
-                </div>
-            </div>
-        {% endif %}
     {% empty %}
         <p> Todavia no tienes mensajes </p>
     {% endfor %}

@@ -1,0 +1,14 @@
+{% extends 'GestionCO2/empresa_detalles.html' %}
+
+{% block content_1 %}
+    <div class="titulo_pagina">
+        <h1>Nuevo mensaje a expertos</h1>
+    </div>
+    <form method="POST" class="post-form">
+        {% csrf_token %}
+        <div class="añadir_commen">
+            {{ form.as_p }}
+        </div>
+        <button type="submit" class="save btn btn-default">Enviar</button>
+    </form>
+{% endblock %}
