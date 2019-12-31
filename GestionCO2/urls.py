@@ -15,6 +15,7 @@ urlpatterns = [
     path('añadir_edificio/<int:pk>/', views.añadir_edificio, name='añadir_edificio'),
     path('añadir_vehiculo/<int:pk>/', views.añadir_vehiculo, name='añadir_vehiculo'),
     path('añadir_generador/<int:pk>/', views.añadir_generador, name='añadir_generador'),
+    path('añadir_viaje/<int:pk>/', views.añadir_viaje, name='añadir_viaje'),
     path('añadir_empresa/', views.añadir_empresa, name='añadir_empresa'),
     path('mensajes/<int:pk>/', views.mensajes, name='mensajes'),
     path('mensaje/<int:pk>/<int:mensajePK>/', views.mensaje_detalles, name='mensaje_detalles'),

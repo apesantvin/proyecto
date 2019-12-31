@@ -13,13 +13,12 @@
         {% csrf_token %}
         {% if edificios %}
         <hr>
-            {{ form2.as_p }}
             {{ form.as_p }}
             <p><strong> Formato para añadir la fecha: Año-Mes-Día </strong></p>
             <br/>
             <button type="submit" class="save btn btn-default">Save</button>
         {% else %}
-            <h3>No edificios encontrados</h3>
+            <h3>No hay datos</h3>
         {% endif %}
     </form>
     <br/><br/>

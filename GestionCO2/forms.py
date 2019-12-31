@@ -62,6 +62,20 @@ class GeneradorEdificioForm(forms.ModelForm):
             'fecha_generacion'
             )
 
+class ViajeForm(forms.ModelForm):
+    def __init__(self, empresa, *args, **kwargs):
+        super(ViajeForm, self).__init__(*args, **kwargs)
+        self.fields['personal'].queryset = Personal.objects.filter(empresa=empresa)
+    class Meta:
+        model = Viaje
+        fields = (
+            'personal',
+            'fecha_viaje',
+            'distancia',
+            'transporte',
+            'noches_hotel'
+            )
+
 class formularioregistroForm(UserCreationForm):
     email = forms.EmailField(required = True)
     first_name = forms.CharField(required = False)

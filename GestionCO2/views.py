@@ -155,7 +155,22 @@ def añadir_generador(request, pk):
             return redirect('añadir_generador', pk=e.pk)
     else:
         form = GeneradorEdificioForm(e)
-    return render(request, 'GestionCO2/añadir_datos_html_generador.html', {'form': form, 'empresa': e, 'title':'consumo de Generador', 'error':error, 'edificios':edificios})
+    return render(request, 'GestionCO2/añadir_datos_html_generador.html', {'form': form, 'empresa': e, 'title':'Energía Generada', 'error':error, 'edificios':edificios})
+
+@login_required
+def añadir_viaje(request, pk):
+    e = get_object_or_404(Empresa, pk=pk)
+    error='Error'
+    personal = Personal.objects.filter(empresa=e)
+    if request.method == "POST":
+        form = ViajeForm(e,request.POST)
+        if form.is_valid():
+            viaje = form.save(commit=False)
+            viaje.save()
+            return redirect('añadir_viaje', pk=e.pk)
+    else:
+        form = ViajeForm(e)
+    return render(request, 'GestionCO2/añadir_datos_html_generador.html', {'form': form, 'empresa': e, 'title':'Viaje', 'error':error, 'edificios':personal})
 
 def register(request):
     form = formularioregistroForm()
@@ -174,12 +189,13 @@ def register(request):
 def pagina_principal(request):
     return render(request, 'GestionCO2/pagina_principal.html')
 
+@login_required
 def mensajes_experto(request):
     lista_mensajes = Mensaje.objects.filter(respondido=0)
     explicacion='Aqui podras ver los mensajes que han mandado las empresas y todavía estan sin responder. Pulsando en cada uno de ellos, podrás responder a dicho mensaje. '
     return render(request, 'experto/inicio_experto.html',  {'lista_mensajes':lista_mensajes, 'add':explicacion})
         
-
+@login_required
 def experto_mensaje(request, mensajePK):
     mensaje = get_object_or_404(Mensaje, pk=mensajePK)
     if request.method == "POST":
@@ -195,10 +211,12 @@ def experto_mensaje(request, mensajePK):
         form = RespuestaForm()
     return render(request, 'experto/experto_mensaje.html',  {'form': form, 'm':mensaje})
 
+@login_required
 def mensaje_detalles_experto(request, mensajePK):
     m = get_object_or_404(Mensaje, pk=mensajePK)
     return render(request, 'experto/mensaje_detalles_experto.html',  {'m' : m})
 
+@login_required
 def ask_for_experto(request):
     form = ExpertoForm(request.POST,request.FILES)
     if form.is_valid():
@@ -208,22 +226,26 @@ def ask_for_experto(request):
         experto.save()
     return (mensajes_todos_experto(request))
 
+@login_required
 def add_experto(request, expertoPK):
     experto = get_object_or_404(Experto, pk=expertoPK)
     experto.autorizar()
     lista_expertos = Experto.objects.filter(autorizado=0)
     return render(request, 'experto/lista_expertos_añadir.html',  {'lista_expertos':lista_expertos})
 
+@login_required
 def mensajes_empresa(request, pk):
     empresa = get_object_or_404(Empresa, pk=pk)
     lista_mensajes = Mensaje.objects.filter(empresa=empresa)
     explicacion='Aqui podras ver los mensajes que han mandado la empresa '+str(empresa)+'. Pulsando en cada uno de ellos, podrás ver la respuesta en caso de que tenga, caso contrario podrás responder al mensaje.'
     return render(request, 'experto/lista_mensajes_empresa.html',  {'lista_mensajes':lista_mensajes, 'add':explicacion})
 
+@login_required
 def lista_expertos_añadir(request):
     lista_expertos = Experto.objects.filter(autorizado=0)
     return render(request, 'experto/lista_expertos_añadir.html',  {'lista_expertos':lista_expertos})
-    
+ 
+@login_required
 def mensajes_todos_experto(request):
     no_experto=0;
     lista_expertos = Experto.objects.all()
