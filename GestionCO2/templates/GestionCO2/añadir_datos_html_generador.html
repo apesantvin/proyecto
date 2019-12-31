@@ -1,0 +1,27 @@
+{% extends 'GestionCO2/añadir_datos_empresa.html' %}
+
+{% block content_2 %}
+    <div class='titulo_pagina'>
+        <h2>Añadir {{title}}</h2>
+    </div>
+    {% if error != 'Error' %}
+        <div class="Error">
+            <p>{{error}}<strong>{{empresa.nombre_empresa}}</strong></p>
+        </div>
+    {% endif %}
+    <form  role="form" class="formulario_añadir" enctype="multipart/form-data" action="." method="POST"> 
+        {% csrf_token %}
+        {% if edificios %}
+        <hr>
+            {{ form2.as_p }}
+            {{ form.as_p }}
+            <p><strong> Formato para añadir la fecha: Año-Mes-Día </strong></p>
+            <br/>
+            <button type="submit" class="save btn btn-default">Save</button>
+        {% else %}
+            <h3>No edificios encontrados</h3>
+        {% endif %}
+    </form>
+    <br/><br/>
+    <hr/>
+{% endblock %}

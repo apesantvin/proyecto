@@ -50,23 +50,16 @@ class VehiculoEdificioForm(forms.ModelForm):
             'fecha_compra')
 
 class GeneradorEdificioForm(forms.ModelForm):
-    def __init__(self, edificios_lit, *args, **kwargs):
+    def __init__(self, empresa, *args, **kwargs):
         super(GeneradorEdificioForm, self).__init__(*args, **kwargs)
-        self.fields['edificio'] = forms.ChoiceField(choices=tuple([(name, name) for name in edificios_lit]))
+        self.fields['edificio'].queryset = Edificio.objects.filter(empresa=empresa)
     class Meta:
         model = Generador
         fields = (
             'edificio',
             'medios',
             'cantidad_generada',
-            'fecha_generacion')
-
-class GeneradorEdificioForm2(forms.ModelForm):
-
-    class Meta:
-        model = Generador
-        fields = (
-            'edificio',
+            'fecha_generacion'
             )
 
 class formularioregistroForm(UserCreationForm):

@@ -147,25 +147,16 @@ def añadir_generador(request, pk):
     e = get_object_or_404(Empresa, pk=pk)
     error='Error'
     edificios = Edificio.objects.filter(empresa=e)
-    edificios_list = [edif.nombre_edificio for edif in edificios]
     if request.method == "POST":
-        form = GeneradorEdificioForm(request.POST,edificios_list)
+        form = GeneradorEdificioForm(e,request.POST)
         if form.is_valid():
             generador = form.save(commit=False)
-            generador.empresa=e
             generador.save()
             return redirect('añadir_generador', pk=e.pk)
     else:
-<<<<<<< HEAD
-        form = GeneradorEdificioForm(edificios_list)
+        form = GeneradorEdificioForm(e)
     return render(request, 'GestionCO2/añadir_datos_html_generador.html', {'form': form, 'empresa': e, 'title':'consumo de Generador', 'error':error, 'edificios':edificios})
 
-@login_required
-=======
-        form = GeneradorEdificioForm()
-    return render(request, 'GestionCO2/añadir_datos_html.html', {'form': form, 'empresa': e, 'title':'consumo de Generador', 'error':error})
-
->>>>>>> 3249d8ff7c2bf0d630fc0ed8bc0a179590515222
 def register(request):
     form = formularioregistroForm()
     form.fields['username'].help_text = None
