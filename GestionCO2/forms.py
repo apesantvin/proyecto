@@ -76,6 +76,32 @@ class ViajeForm(forms.ModelForm):
             'fecha_viaje',
             )
 
+class ConsumoEdificioForm(forms.ModelForm):
+    def __init__(self, empresa, *args, **kwargs):
+        super(ConsumoEdificioForm, self).__init__(*args, **kwargs)
+        self.fields['edificio'].queryset = Edificio.objects.filter(empresa=empresa)
+        
+    class Meta:
+            model = EdificioConsumo
+            fields = ('edificio',
+                      'tipo',
+                      'cantidad_consumida',
+                      'fecha_consumo')
+            
+class ConsumoVehiculoForm(forms.ModelForm):
+    def __init__(self, empresa, *args, **kwargs):
+        super(ConsumoVehiculoForm, self).__init__(*args, **kwargs)
+        self.fields['personal'].queryset = Personal.objects.filter(empresa=empresa)
+        self.fields['vehiculo'].queryset = Vehiculo.objects.filter(empresa=empresa)
+        
+    class Meta:
+            model = VehiculoConsumo
+            fields = ('personal',
+                      'vehiculo',
+                      'tipo',
+                      'cantidad_consumida',
+                      'fecha_consumo')
+
 class formularioregistroForm(UserCreationForm):
     email = forms.EmailField(required = True)
     first_name = forms.CharField(required = False)

@@ -111,7 +111,7 @@ def añadir_personal(request, pk):
             return redirect('añadir_personal', pk=empresa.pk)
     else:
         form = PersonalEmpresaForm()
-    return render(request, 'GestionCO2/añadir_datos_html.html', {'form': form, 'empresa': empresa, 'title':'Personal', 'error':error})
+    return render(request, 'GestionCO2/añadir_datos_plantilla1.html', {'form': form, 'empresa': empresa, 'title':'Personal', 'error':error})
 
 @login_required
 def añadir_edificio(request, pk):
@@ -125,7 +125,7 @@ def añadir_edificio(request, pk):
             return redirect('añadir_edificio', pk=empresa.pk)
     else:
         form = EdificioEmpresaForm()
-    return render(request, 'GestionCO2/añadir_datos_html.html', {'form': form, 'empresa': empresa, 'title':'Edificio', 'error':'Error'})
+    return render(request, 'GestionCO2/añadir_datos_plantilla1.html', {'form': form, 'empresa': empresa, 'title':'Edificio', 'error':'Error'})
 
 @login_required
 def añadir_vehiculo(request, pk):
@@ -140,7 +140,7 @@ def añadir_vehiculo(request, pk):
             return redirect('añadir_vehiculo', pk=empresa.pk)
     else:
         form = VehiculoEdificioForm()
-    return render(request, 'GestionCO2/añadir_datos_html.html', {'form': form, 'empresa': empresa, 'title':'Vehículo', 'error':error})
+    return render(request, 'GestionCO2/añadir_datos_plantilla1.html', {'form': form, 'empresa': empresa, 'title':'Vehículo', 'error':error})
 
 @login_required
 def añadir_generador(request, pk):
@@ -155,7 +155,7 @@ def añadir_generador(request, pk):
             return redirect('añadir_generador', pk=e.pk)
     else:
         form = GeneradorEdificioForm(e)
-    return render(request, 'GestionCO2/añadir_datos_html_generador.html', {'form': form, 'empresa': e, 'title':'Energía Generada', 'error':error, 'edificios':edificios})
+    return render(request, 'GestionCO2/añadir_datos_plantilla2.html', {'form': form, 'empresa': e, 'title':'Energía Generada', 'error':error, 'edificios':edificios})
 
 @login_required
 def añadir_viaje(request, pk):
@@ -170,7 +170,38 @@ def añadir_viaje(request, pk):
             return redirect('añadir_viaje', pk=e.pk)
     else:
         form = ViajeForm(e)
-    return render(request, 'GestionCO2/añadir_datos_html_generador.html', {'form': form, 'empresa': e, 'title':'Viaje', 'error':error, 'edificios':personal})
+    return render(request, 'GestionCO2/añadir_datos_plantilla2.html', {'form': form, 'empresa': e, 'title':'Viaje', 'error':error, 'edificios':personal})
+
+@login_required
+def añadir_consumoEdificio(request, pk):
+    e = get_object_or_404(Empresa, pk=pk)
+    error='Error'
+    edificios = Edificio.objects.filter(empresa=e)
+    if request.method == "POST":
+        form = ConsumoEdificioForm(e,request.POST)
+        if form.is_valid():
+            consumo = form.save(commit=False)
+            consumo.save()
+            return redirect('añadir_consumoEdificio', pk=e.pk)
+    else:
+        form = ConsumoEdificioForm(e)
+    return render(request, 'GestionCO2/añadir_datos_plantilla2.html', {'form': form, 'empresa': e, 'title':'Consumo de Edificio', 'error':error, 'edificios':edificios})
+
+@login_required
+def añadir_consumoVehiculo(request, pk):
+    e = get_object_or_404(Empresa, pk=pk)
+    error='Error'
+    vehiculo = Vehiculo.objects.filter(empresa=e)
+    personal = Personal.objects.filter(empresa=e)
+    if request.method == "POST":
+        form = ConsumoVehiculoForm(e,request.POST)
+        if form.is_valid():
+            consumo = form.save(commit=False)
+            consumo.save()
+            return redirect('añadir_consumoVehiculo', pk=e.pk)
+    else:
+        form = ConsumoVehiculoForm(e)
+    return render(request, 'GestionCO2/añadir_VehiculoConsumo.html', {'form': form, 'empresa': e, 'title':'Consumo de Vehiculo', 'error':error, 'vehiculo':vehiculo, 'personal':personal})
 
 def register(request):
     form = formularioregistroForm()
