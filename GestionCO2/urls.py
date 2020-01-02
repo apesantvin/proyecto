@@ -25,6 +25,7 @@ urlpatterns = [
     path('inicio_experto', views.mensajes_todos_experto, name='inicio_experto'),
     path('ask_for_experto', views.ask_for_experto, name='ask_for_experto'),
     path('add_experto/<int:expertoPK>/', views.add_experto, name='add_experto'),
+    path('eliminar_peticion_experto/<int:expertoPK>/', views.eliminar_peticion_experto, name='eliminar_peticion_experto'),
     path('mensajes_experto', views.mensajes_experto, name='mensajes_experto'),
     path('mensajes_empresa/<int:pk>/', views.mensajes_empresa, name='mensajes_empresa'),
     path('mensajes_todos_experto', views.mensajes_todos_experto, name='mensajes_todos_experto'),

@@ -228,6 +228,9 @@ form {
 .experto-lista{
     float: left;
 }
+.experto-lista a{
+    color: #000000;
+}
 
 .texto p{
     text-align: left;

@@ -10,7 +10,9 @@
             <div class="Espacio4"></div>
             <p> {{experto}} </p>
             <div class="Espacio4"></div>
-            <a href="{% url 'add_experto' expertoPK=experto.pk %}" class="save btn btn-default">Aceptar Experto</a>
+            <a href="{% url 'add_experto' expertoPK=experto.pk %}">Aceptar Experto</a>
+            <br/><br/>
+            <a href="{% url 'eliminar_peticion_experto' expertoPK=experto.pk %}">Elimiar petición</a>
         </div>
     {% empty %}
         <p> No hay expertos para añadir </p>

@@ -260,6 +260,13 @@ def add_experto(request, expertoPK):
     return render(request, 'experto/lista_expertos_añadir.html',  {'lista_expertos':lista_expertos})
 
 @login_required
+def eliminar_peticion_experto(request, expertoPK):
+    experto = get_object_or_404(Experto, pk=expertoPK)
+    experto.delete()
+    lista_expertos = Experto.objects.filter(autorizado=0)
+    return render(request, 'experto/lista_expertos_añadir.html',  {'lista_expertos':lista_expertos})
+
+@login_required
 def mensajes_empresa(request, pk):
     empresa = get_object_or_404(Empresa, pk=pk)
     lista_mensajes = Mensaje.objects.filter(empresa=empresa)
