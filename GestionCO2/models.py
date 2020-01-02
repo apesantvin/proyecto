@@ -105,18 +105,18 @@ class Viaje(models.Model):
     
     @property
     def co2(self):
-        if self.tipo == '1':
+        if self.transporte == '1':
             api_url = 'https://api.triptocarbon.xyz/v1/footprint?activity=1&activityType=miles&country=def&mode=anyCar'
-        elif self.tipo == '2':
+        elif self.transporte == '2':
             api_url = 'https://api.triptocarbon.xyz/v1/footprint?activity=1&activityType=miles&country=def&mode=anyFlight'
-        elif self.tipo == '3':
+        elif self.transporte == '3':
             api_url = 'https://api.triptocarbon.xyz/v1/footprint?activity=1&activityType=miles&country=def&mode=bus'
-        elif self.tipo == '4':
+        elif self.transporte == '4':
             api_url = 'https://api.triptocarbon.xyz/v1/footprint?activity=1&activityType=miles&country=def&mode=transitRail'
         response = urlopen(api_url)
         datos_web=json.loads(response.read())
             
-        return self.distancia * 0.621371 * datos_web['carbonFootprint']
+        return float(self.distancia) * 0.621371 * float(datos_web['carbonFootprint'])
 
     def __str__(self):
         return '{0}'.format(self.fecha_viaje)
