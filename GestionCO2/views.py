@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import login as do_login
 from django.contrib.auth.decorators import login_required
 import sqlite3, csv
+from django.contrib import messages
 
 def empresa_lista(request):
     datos = Empresa.objects.all().order_by('nombre_empresa')
@@ -52,8 +53,8 @@ def empresa_configuracion(request, pk):
                 for row in csv_reader:
                     if line_count == 0:
                         if (e.nombre_empresa != row[0]):
-                            print('El nombre en el csv no coincide')
-                            return -1
+                            messages.error(request, 'El nombre en el csv no coincide')
+                            return redirect('empresa_configuracion', pk=e.pk)
 #CAMBIARCAMBIARCAMBIARCAMBIARCAMBIARCAMBIARCAMBIARCAMBIARCAMBIARCAMBIARCAMBIARCAMBIARCAMBIARCAMBIARCAMBIARCAMBIARCAMBIAR
                     elif line_count == 1:
                         if row == ['apellidos_persona', 'fecha_contratacion', 'nombre_persona']:
@@ -69,8 +70,8 @@ def empresa_configuracion(request, pk):
                         elif row == ['nombre_persona', 'apellidos_persona', 'matricula', 'fecha_consumo', 'tipo']:
                             tipo_csv = 6
                         else:
-                            print('El formato del documento csv no es correcto')
-                            return -1
+                            messages.error(request, 'El formato del documento csv no es correcto')
+                            return redirect('empresa_configuracion', pk=e.pk)
 ##CAMBIARCAMBIARCAMBIARCAMBIARCAMBIARCAMBIARCAMBIARCAMBIARCAMBIARCAMBIARCAMBIARCAMBIARCAMBIARCAMBIARCAMBIARCAMBIARCAMBIAR
                     else:
                         if tipo_csv == 1:
@@ -86,15 +87,11 @@ def empresa_configuracion(request, pk):
                             edif = Edificio.objects.get(empresa=e, nombre_edificio=row[0])
                             EdificioConsumo.objects.get_or_create(edificio=edif.pk, cantidad_generada=row[1], fecha_generacion=row[2], medios=row[3])
                     line_count += 1
+            messages.success(request, 'Datos del fichero añadidos con éxito')
             return redirect('empresa_detalles', pk=e.pk)
     else:
         form = leercsv()
     return render(request, 'GestionCO2/empresa_configuracion.html', {'empresa': e,'form': form})
-
-@login_required
-def empresa_configuracion_cambios(request, pk):
-    empresa = get_object_or_404(Empresa, pk=pk)
-    return render(request, 'GestionCO2/empresa_configuracion_cambios.html', {'empresa': empresa})
 
 @login_required
 def añadir_datos_empresa(request, pk):
@@ -150,6 +147,7 @@ def añadir_personal(request, pk):
             personal = form.save(commit=False)
             personal.empresa=empresa
             personal.save()
+            messages.success(request, 'Personal añadido con éxito')
             return redirect('añadir_personal', pk=empresa.pk)
     else:
         form = PersonalEmpresaForm()
@@ -164,6 +162,7 @@ def añadir_edificio(request, pk):
             edificio = form.save(commit=False)
             edificio.empresa=empresa
             edificio.save()
+            messages.success(request, 'Edificio añadido con éxito')
             return redirect('añadir_edificio', pk=empresa.pk)
     else:
         form = EdificioEmpresaForm()
@@ -179,6 +178,7 @@ def añadir_vehiculo(request, pk):
             vehiculo = form.save(commit=False)
             vehiculo.empresa=empresa
             vehiculo.save()
+            messages.success(request, 'Vehículo añadido con éxito')
             return redirect('añadir_vehiculo', pk=empresa.pk)
     else:
         form = VehiculoEdificioForm()
@@ -194,6 +194,7 @@ def añadir_generador(request, pk):
         if form.is_valid():
             generador = form.save(commit=False)
             generador.save()
+            messages.success(request, 'Energía generada añadido con éxito')
             return redirect('añadir_generador', pk=e.pk)
     else:
         form = GeneradorEdificioForm(e)
@@ -209,6 +210,7 @@ def añadir_viaje(request, pk):
         if form.is_valid():
             viaje = form.save(commit=False)
             viaje.save()
+            messages.success(request, 'Viaje añadido con éxito')
             return redirect('añadir_viaje', pk=e.pk)
     else:
         form = ViajeForm(e)
@@ -224,6 +226,7 @@ def añadir_consumoEdificio(request, pk):
         if form.is_valid():
             consumo = form.save(commit=False)
             consumo.save()
+            messages.success(request, 'Consumo edificio añadido con éxito')
             return redirect('añadir_consumoEdificio', pk=e.pk)
     else:
         form = ConsumoEdificioForm(e)
@@ -240,6 +243,7 @@ def añadir_consumoVehiculo(request, pk):
         if form.is_valid():
             consumo = form.save(commit=False)
             consumo.save()
+            messages.success(request, 'Consumo vehículo añadido con éxito')
             return redirect('añadir_consumoVehiculo', pk=e.pk)
     else:
         form = ConsumoVehiculoForm(e)

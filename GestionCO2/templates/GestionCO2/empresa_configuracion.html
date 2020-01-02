@@ -2,7 +2,18 @@
 
 {% block content_1 %}
     <div class='user-config'>
-<!--         <a> Añadir Datos con CSV </a> -->
+        <div class="form-group">
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <div class="alert alert-error"> 
+                    <p class="glyphicon glyphicon-remove-sign"></p>
+                    {{message}}
+                    </div>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
         <form  role="form2" class="formulario_csv" enctype="multipart/form-data" action="." method="POST"> 
             {% csrf_token %}
             {{ form.as_p }}
@@ -12,7 +23,5 @@
         <a href="{% url 'añadir_datos_empresa' pk=empresa.pk %}">Añadir Datos manualmente </a>
         <br/><br/>
         <a href="{% url 'mensajes' pk=empresa.pk %}">¿Necesitas Ayuda? </a>
-        <br/><br/>
-        <a href="{% url 'empresa_configuracion_cambios' pk=empresa.pk %}">Configuración de la cuenta </a>
     </div>
 {% endblock %}

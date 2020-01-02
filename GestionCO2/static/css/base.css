@@ -179,7 +179,9 @@ form {
     float: right;
     width:95%;
 }
-
+.form-group{
+    background-color:#fea2a2
+}
 .usuario{
     width:60px;
     float: left;
