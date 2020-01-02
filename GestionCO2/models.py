@@ -1,12 +1,13 @@
 from django.db import models
 from django.utils import timezone
+from urllib.request import urlopen
+import json
 
 TRANSPORTES2=(
     ('1', 'Coche'),
     ('2', 'Avión'),
     ('3', 'Autobus'),
     ('4', 'Tren'),
-    ('5', 'Barco'),
 )
 
 TIPOS_ED = (
@@ -98,9 +99,24 @@ class Personal(models.Model):
 class Viaje(models.Model):
     fecha_viaje = models.DateField(default=timezone.now)
     personal = models.ManyToManyField('Personal')
-    distancia = models.FloatField('KM recorridos')
+    distancia = models.DecimalField(max_digits=5, decimal_places=2,default=0)
     transporte = models.CharField(max_length=50,choices=TRANSPORTES2)
     noches_hotel = models.IntegerField('Noches en hotel',default=0)
+    
+    @property
+    def co2(self):
+        if self.tipo == '1':
+            api_url = 'https://api.triptocarbon.xyz/v1/footprint?activity=1&activityType=miles&country=def&mode=anyCar'
+        elif self.tipo == '2':
+            api_url = 'https://api.triptocarbon.xyz/v1/footprint?activity=1&activityType=miles&country=def&mode=anyFlight'
+        elif self.tipo == '3':
+            api_url = 'https://api.triptocarbon.xyz/v1/footprint?activity=1&activityType=miles&country=def&mode=bus'
+        elif self.tipo == '4':
+            api_url = 'https://api.triptocarbon.xyz/v1/footprint?activity=1&activityType=miles&country=def&mode=transitRail'
+        response = urlopen(api_url)
+        datos_web=json.loads(response.read())
+            
+        return self.distancia * 0.621371 * datos_web['carbonFootprint']
 
     def __str__(self):
         return '{0}'.format(self.fecha_viaje)
@@ -165,3 +181,8 @@ class Experto(models.Model):
     
     def __str__(self):
         return str(self.usuario)
+    
+class CSVs(models.Model):
+    empresa = models.ForeignKey('Empresa',on_delete=models.CASCADE)
+    CSV=models.FileField(upload_to='CSVs/')
+    fecha_subida=models.DateTimeField(default=timezone.now)
