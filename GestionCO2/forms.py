@@ -129,8 +129,3 @@ class RespuestaForm(forms.ModelForm):
         model = Respuesta
         fields = (
             'texto',)
-
-class ExpertoForm(forms.ModelForm):
-    class Meta:
-        model = Experto
-        fields = ()

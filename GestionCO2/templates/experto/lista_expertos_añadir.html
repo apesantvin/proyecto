@@ -7,17 +7,13 @@
             <div class="usuario">
                 <p class="glyphicon glyphicon-user"></p>
             </div>
-            <div class="aceptar-expertos">
-                <div class="Espacio4"></div>
-                <p> {{experto}} </p>
-                <div class="Espacio4"></div>
-                <div class="Añadir_mensaje">
-                    <a href="{% url 'add_experto' expertoPK=experto.pk %}" class="save btn btn-default">Aceptar Experto</a>
-                </div>
-            </div>
+            <div class="Espacio4"></div>
+            <p> {{experto}} </p>
+            <div class="Espacio4"></div>
+            <a href="{% url 'add_experto' expertoPK=experto.pk %}" class="save btn btn-default">Aceptar Experto</a>
         </div>
     {% empty %}
-        <p> No expertos para añadir </p>
+        <p> No hay expertos para añadir </p>
     {% endfor %}
 {% endblock %}
 

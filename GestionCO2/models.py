@@ -155,6 +155,10 @@ class Experto(models.Model):
     id_usuario = models.IntegerField(default=0, unique=True)
     autorizado = models.IntegerField(default=0)
     
+    def desautorizar(self):
+        self.autorizado = 0
+        self.save()
+    
     def autorizar(self):
         self.autorizado = 1
         self.save()

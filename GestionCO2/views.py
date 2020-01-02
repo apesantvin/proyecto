@@ -249,12 +249,7 @@ def mensaje_detalles_experto(request, mensajePK):
 
 @login_required
 def ask_for_experto(request):
-    form = ExpertoForm(request.POST,request.FILES)
-    if form.is_valid():
-        experto = form.save(commit=False)
-        experto.usuario = request.user
-        experto.id_usuario = request.user.id
-        experto.save()
+    Experto.objects.create(usuario=request.user, id_usuario=request.user.id)
     return (mensajes_todos_experto(request))
 
 @login_required

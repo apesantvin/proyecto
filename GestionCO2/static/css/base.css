@@ -48,7 +48,7 @@ form {
     border: 1px solid #CCC;
     border-radius: 1em;
 }
-.formulario_csv{
+.formulario_csv, .experto-lista{
     /* Sólo para centrar el formulario a la página */
     margin: 0;
     width: -275px;
@@ -56,6 +56,9 @@ form {
     padding: 0em;
     border: 0px solid #CCC;
     border-radius: 0em;
+}
+.experto-lista{
+    margin: 10px;
 }
 .contenedor{
     background-color:#ffffff;
@@ -225,9 +228,6 @@ form {
 .experto-lista{
     float: left;
 }
-.aceptar-expertos{
-    float: right;
-}
 
 .texto p{
     text-align: left;
@@ -248,11 +248,6 @@ form {
     color: #000000;
 }
 
-
-.Añadir_mensaje{
-    width:95%;
-    text-align: right;
-}
 .post-form, .post-form{
     width:450px;
     float: center;
