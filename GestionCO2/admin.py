@@ -13,4 +13,5 @@ admin.site.register(Mensaje)
 admin.site.register(Respuesta)
 admin.site.register(Experto)
 admin.site.register(CSVs)
+admin.site.register(Factores_conversion)
 # Register your models here.

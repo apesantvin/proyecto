@@ -186,3 +186,24 @@ class CSVs(models.Model):
     empresa = models.ForeignKey('Empresa',on_delete=models.CASCADE)
     CSV=models.FileField(upload_to='CSVs/')
     fecha_subida=models.DateTimeField(default=timezone.now)
+    
+class Factores_conversion(models.Model):
+    #Kilogramos de CO2 por persona en las 8 horas medias de trabajo
+    persona = models.DecimalField(max_digits=5, decimal_places=2,default=0.72*60*8)
+    #Kilogramos de CO2 por litro
+    Edificio_consumo_Agua = models.DecimalField(max_digits=5, decimal_places=2,default=0)
+    Edificio_consumo_Aceite = models.DecimalField(max_digits=5, decimal_places=2,default=0)
+    #Kilogramos de CO2 por kWh
+    Edificio_consumo_Electricidad = models.DecimalField(max_digits=5, decimal_places=2,default=0.35)
+    #Kilogramos de CO2 por Kg de propano
+    Edificio_consumo_Propano = models.DecimalField(max_digits=5, decimal_places=2,default=2.938)
+    #Kilogramos de CO2 por kWh 
+    Edificio_consumo_GasNatural = models.DecimalField(max_digits=5, decimal_places=2,default=0.203)
+    #Kilogramos de CO2 por kWh de electricidad consumido
+    Vehiculo_consumo_Electricidad = models.DecimalField(max_digits=5, decimal_places=2,default=2.97)
+    #Kilogramos de CO2 por litro de combusible
+    Vehiculo_consumo_Gasolina = models.DecimalField(max_digits=5, decimal_places=2,default=2.157)
+    Vehiculo_consumo_Diesel = models.DecimalField(max_digits=5, decimal_places=2,default=2.493)
+    
+    def __str__(self):
+        return 'Factores'+str(self.pk)
