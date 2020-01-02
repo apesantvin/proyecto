@@ -106,7 +106,7 @@ class Viaje(models.Model):
         return '{0}'.format(self.fecha_viaje)
     
 class Consumo(models.Model):
-    cantidad_consumida = models.IntegerField()
+    cantidad_consumida = models.DecimalField(max_digits=5, decimal_places=2)
     fecha_consumo= models.DateField('Fecha del consumo')
     
 class EdificioConsumo(Consumo):
