@@ -267,6 +267,13 @@ def eliminar_peticion_experto(request, expertoPK):
     return render(request, 'experto/lista_expertos_añadir.html',  {'lista_expertos':lista_expertos})
 
 @login_required
+def eliminar_experto_autorizado(request, expertoPK):
+    experto = get_object_or_404(Experto, pk=expertoPK)
+    experto.desautorizar()
+    lista_expertos = Experto.objects.filter(autorizado=0)
+    return render(request, 'experto/lista_expertos_eliminar.html',  {'lista_expertos':lista_expertos})
+
+@login_required
 def mensajes_empresa(request, pk):
     empresa = get_object_or_404(Empresa, pk=pk)
     lista_mensajes = Mensaje.objects.filter(empresa=empresa)
@@ -277,6 +284,11 @@ def mensajes_empresa(request, pk):
 def lista_expertos_añadir(request):
     lista_expertos = Experto.objects.filter(autorizado=0)
     return render(request, 'experto/lista_expertos_añadir.html',  {'lista_expertos':lista_expertos})
+
+@login_required
+def lista_expertos_eliminar(request):
+    lista_expertos = Experto.objects.filter(autorizado=1)
+    return render(request, 'experto/lista_expertos_eliminar.html',  {'lista_expertos':lista_expertos})
  
 @login_required
 def mensajes_todos_experto(request):

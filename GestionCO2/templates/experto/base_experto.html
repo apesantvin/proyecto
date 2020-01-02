@@ -9,6 +9,8 @@
         <br/><br/><br/>
         {% if user.is_superuser%}
             <a href="{% url 'lista_expertos_añadir' %}"> Añadir expertos </a>
+            <br/><br/><br/>
+            <a href="{% url 'lista_expertos_eliminar' %}"> Eliminar expertos </a>
         {% endif %}
     </div>
     <div class='mensajes-expertos'>
