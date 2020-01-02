@@ -6,6 +6,8 @@
         <form  role="form2" class="formulario_csv" enctype="multipart/form-data" action="." method="POST"> 
             {% csrf_token %}
             {{ form.as_p }}
+            <br/>
+            <button type="submit" class="save btn btn-default">Save</button>
         </form>
         <a href="{% url 'añadir_datos_empresa' pk=empresa.pk %}">Añadir Datos manualmente </a>
         <br/><br/>

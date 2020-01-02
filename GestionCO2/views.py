@@ -5,7 +5,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.contrib.auth import login as do_login
 from django.contrib.auth.decorators import login_required
-import sqlite3
+import sqlite3, csv
 
 def empresa_lista(request):
     datos = Empresa.objects.all().order_by('nombre_empresa')
@@ -39,15 +39,55 @@ def empresa_detalles(request,pk):
 
 @login_required
 def empresa_configuracion(request, pk):
-    empresa = get_object_or_404(Empresa, pk=pk)
+    e = get_object_or_404(Empresa, pk=pk)
     if request.method=='POST':
         form = leercsv(request.POST,request.FILES)
         if form.is_valid():
             CSV=form.save(commit=False)
-            return redirect('empresa_detalles', pk=empresa.pk)
+            CSV.empresa=e
+            CSV.save()
+            with open('./media/'+str(CSV.CSV)) as csv_file:
+                csv_reader = csv.reader(csv_file, delimiter=';')
+                line_count = 0
+                for row in csv_reader:
+                    if line_count == 0:
+                        if (e.nombre_empresa != row[0]):
+                            print('El nombre en el csv no coincide')
+                            return -1
+                    elif line_count == 1:
+                        if row == ['apellidos_persona', 'fecha_contratacion', 'nombre_persona']:
+                            tipo_csv = 1
+                        elif row == ['fecha_compra', 'matricula', 'tamano', 'tipo_transporte']:
+                            tipo_csv = 2
+                        elif row == ['nombre_edificio', 'localizacion', 'fecha_adquisicion']:
+                            tipo_csv = 3
+                        elif row == ['nombre_edificio', 'tipo', 'cantidad_consumida', 'fecha_consumo']:
+                            tipo_csv = 4
+                        elif row == ['nombre_edificio', 'cantidad_generada', 'fecha_generacion', 'medios']:
+                            tipo_csv = 5
+                        elif row == ['nombre_persona', 'apellidos_persona', 'matricula', 'fecha_consumo', 'tipo']:
+                            tipo_csv = 6
+                        else:
+                            print('El formato del documento csv no es correcto')
+                            return -1
+                    else:
+                        if tipo_csv == 1:
+                            Personal.objects.get_or_create(empresa=e, apellidos_persona=row[0], fecha_contratacion=row[1], nombre_persona=row[2])
+                        elif tipo_csv == 2:
+                            Vehiculo.objects.get_or_create(empresa=e, fecha_compra=row[0], matricula=row[1], tamano=row[2],tipo_tranporte=row[3])
+                        elif tipo_csv == 3:
+                            Edificio.objects.get_or_create(empresa=e, nombre_edificio=row[0], localizacion=row[1],fecha_adquisicion=row[2])
+                        elif tipo_csv == 4:
+                            edif = Edificio.objects.get(empresa=e, nombre_edificio=row[0])
+                            EdificioConsumo.objects.get_or_create(edificio=edif.pk, tipo=row[1], cantidad_consumida=row[2], fecha_consumo=row[3])
+                        elif tipo_csv == 5:
+                            edif = Edificio.objects.get(empresa=e, nombre_edificio=row[0])
+                            EdificioConsumo.objects.get_or_create(edificio=edif.pk, cantidad_generada=row[1], fecha_generacion=row[2], medios=row[3])
+                    line_count += 1
+            return redirect('empresa_detalles', pk=e.pk)
     else:
         form = leercsv()
-    return render(request, 'GestionCO2/empresa_configuracion.html', {'empresa': empresa,'form': form})
+    return render(request, 'GestionCO2/empresa_configuracion.html', {'empresa': e,'form': form})
 
 @login_required
 def empresa_configuracion_cambios(request, pk):

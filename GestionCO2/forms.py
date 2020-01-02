@@ -14,9 +14,11 @@ class EmpresaForm(forms.ModelForm):
             'correo',
             'permitido_publicar')
         
-class leercsv(forms.Form):
-    CSV=forms.FileField(required=False)
-
+class leercsv(forms.ModelForm):
+    class Meta:
+        model = CSVs
+        fields = ('CSV',)
+        
 class mensajeForm(forms.ModelForm):
     class Meta:
         model = Mensaje
