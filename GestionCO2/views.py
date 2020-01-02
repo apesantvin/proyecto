@@ -54,6 +54,7 @@ def empresa_configuracion(request, pk):
                         if (e.nombre_empresa != row[0]):
                             print('El nombre en el csv no coincide')
                             return -1
+#CAMBIARCAMBIARCAMBIARCAMBIARCAMBIARCAMBIARCAMBIARCAMBIARCAMBIARCAMBIARCAMBIARCAMBIARCAMBIARCAMBIARCAMBIARCAMBIARCAMBIAR
                     elif line_count == 1:
                         if row == ['apellidos_persona', 'fecha_contratacion', 'nombre_persona']:
                             tipo_csv = 1
@@ -70,6 +71,7 @@ def empresa_configuracion(request, pk):
                         else:
                             print('El formato del documento csv no es correcto')
                             return -1
+##CAMBIARCAMBIARCAMBIARCAMBIARCAMBIARCAMBIARCAMBIARCAMBIARCAMBIARCAMBIARCAMBIARCAMBIARCAMBIARCAMBIARCAMBIARCAMBIARCAMBIAR
                     else:
                         if tipo_csv == 1:
                             Personal.objects.get_or_create(empresa=e, apellidos_persona=row[0], fecha_contratacion=row[1], nombre_persona=row[2])
