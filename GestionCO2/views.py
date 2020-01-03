@@ -53,40 +53,52 @@ def empresa_configuracion(request, pk):
                 for row in csv_reader:
                     if line_count == 0:
                         if (e.nombre_empresa != row[0]):
-                            messages.error(request, 'El nombre en el csv no coincide')
+                            messages.error(request, f'El nombre de la empresa en el csv ({row[0]}) no coincide')
                             return redirect('empresa_configuracion', pk=e.pk)
-#CAMBIARCAMBIARCAMBIARCAMBIARCAMBIARCAMBIARCAMBIARCAMBIARCAMBIARCAMBIARCAMBIARCAMBIARCAMBIARCAMBIARCAMBIARCAMBIARCAMBIAR
-                    elif line_count == 1:
-                        if row == ['apellidos_persona', 'fecha_contratacion', 'nombre_persona']:
-                            tipo_csv = 1
-                        elif row == ['fecha_compra', 'matricula', 'tamano', 'tipo_transporte']:
-                            tipo_csv = 2
-                        elif row == ['nombre_edificio', 'localizacion', 'fecha_adquisicion']:
-                            tipo_csv = 3
-                        elif row == ['nombre_edificio', 'tipo', 'cantidad_consumida', 'fecha_consumo']:
-                            tipo_csv = 4
-                        elif row == ['nombre_edificio', 'cantidad_generada', 'fecha_generacion', 'medios']:
-                            tipo_csv = 5
-                        elif row == ['nombre_persona', 'apellidos_persona', 'matricula', 'fecha_consumo', 'tipo']:
-                            tipo_csv = 6
-                        else:
-                            messages.error(request, 'El formato del documento csv no es correcto')
-                            return redirect('empresa_configuracion', pk=e.pk)
-##CAMBIARCAMBIARCAMBIARCAMBIARCAMBIARCAMBIARCAMBIARCAMBIARCAMBIARCAMBIARCAMBIARCAMBIARCAMBIARCAMBIARCAMBIARCAMBIARCAMBIAR
+                        line_count += 1
                     else:
-                        if tipo_csv == 1:
-                            Personal.objects.get_or_create(empresa=e, apellidos_persona=row[0], fecha_contratacion=row[1], nombre_persona=row[2])
-                        elif tipo_csv == 2:
-                            Vehiculo.objects.get_or_create(empresa=e, fecha_compra=row[0], matricula=row[1], tamano=row[2],tipo_tranporte=row[3])
-                        elif tipo_csv == 3:
-                            Edificio.objects.get_or_create(empresa=e, nombre_edificio=row[0], localizacion=row[1],fecha_adquisicion=row[2])
-                        elif tipo_csv == 4:
-                            edif = Edificio.objects.get(empresa=e, nombre_edificio=row[0])
-                            EdificioConsumo.objects.get_or_create(edificio=edif.pk, tipo=row[1], cantidad_consumida=row[2], fecha_consumo=row[3])
-                        elif tipo_csv == 5:
-                            edif = Edificio.objects.get(empresa=e, nombre_edificio=row[0])
-                            EdificioConsumo.objects.get_or_create(edificio=edif.pk, cantidad_generada=row[1], fecha_generacion=row[2], medios=row[3])
-                    line_count += 1
+                        if row[0] == 'Personal':
+                            Personal.objects.get_or_create(empresa=e, apellidos_persona=row[1], fecha_contratacion=row[2], nombre_persona=row[3])
+                        elif row[0] == 'Vehiculo':
+                            Vehiculo.objects.get_or_create(empresa=e, fecha_compra=row[1], matricula=row[2], tamano=row[3], tipo_tranporte=row[4])
+                        elif row[0] == 'Edificio':
+                            Edificio.objects.get_or_create(empresa=e, nombre_edificio=row[1], localizacion=row[2],fecha_adquisicion=row[3])
+                        elif row[0] == 'EdificioConsumo':
+                            edif = Edificio.objects.get(empresa=e, nombre_edificio=row[1])
+                            f = row[4].split('-')
+                            if edif.fecha_adquisicion <= date(int(f[0]),int(f[1]),int(f[2])):
+                                EdificioConsumo.objects.get_or_create(edificio=edif, tipo=row[2], cantidad_consumida=row[3], fecha_consumo=row[4])
+                            else:
+                                messages.error(request, f'Las fechas introducidas en la linea {line_count + 1} no son correctas')
+                                return redirect('empresa_configuracion', pk=e.pk)
+                        elif row[0] == 'Generador':
+                            edif = Edificio.objects.get(empresa=e, nombre_edificio=row[1])
+                            f = row[3].split('-')
+                            if edif.fecha_adquisicion <= date(int(f[0]),int(f[1]),int(f[2])):
+                                EdificioConsumo.objects.get_or_create(edificio=edif, cantidad_generada=row[2], fecha_generacion=row[3], medios=row[4])
+                            else:
+                                messages.error(request, f'Las fechas introducidas en la linea {line_count + 1} no son correctas')
+                                return redirect('empresa_configuracion', pk=e.pk)
+                        elif row[0] == 'VehiculoConsumo':
+                            veh = Vehiculo.objects.get(empresa=e, matricula=row[3])
+                            pers = Personal.objects.get(empresa=e, apellidos_persona=row[1], nombre_persona=row[2])
+                            f = row[5].split('-')
+                            if veh.fecha_compra <= date(int(f[0]),int(f[1]),int(f[2])) and pers.fecha_contratacion <= date(int(f[0]),int(f[1]),int(f[2])):
+                                VehiculoConsumo.objects.get_or_create(personal=pers, vehiculo=veh, cantidad_consumida=row[4], fecha_consumo=row[5], tipo=row[6])
+                            else:
+                                messages.error(request, f'Las fechas introducidas en la linea {line_count + 1} no son correctas')
+                                return redirect('empresa_configuracion', pk=e.pk)
+                        elif row[0] == 'Viaje':
+                            pers = Personal.objects.get(empresa=e, apellidos_persona=row[1], nombre_persona=row[2])
+                            f = row[3].split('-')
+                            if pers.fecha_contratacion <= date(int(f[0]),int(f[1]),int(f[2])):
+                                Viaje.objects.get_or_create(fecha_viaje=row[3], personal=pers, distancia=row[4], transporte=row[5], noches_hotel=row[6])
+                            else:
+                                messages.error(request, f'Las fechas introducidas en la linea {line_count + 1} no son correctas')
+                                return redirect('empresa_configuracion', pk=e.pk)
+                        else:
+                            messages.error(request, f'No se reconoce la linea {line_count + 1}')
+                        line_count += 1
             messages.success(request, 'Datos del fichero añadidos con éxito')
             return redirect('empresa_detalles', pk=e.pk)
     else:
