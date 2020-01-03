@@ -188,11 +188,9 @@ class CSVs(models.Model):
     fecha_subida=models.DateTimeField(default=timezone.now)
     
 class Factores_conversion(models.Model):
-    #Kilogramos de CO2 por persona por minuto
-    persona = models.DecimalField(max_digits=6, decimal_places=2,default=0.72)
     #Kilogramos de CO2 por litro
-    Edificio_consumo_Agua = models.DecimalField(max_digits=5, decimal_places=2,default=0)
-    Edificio_consumo_Aceite = models.DecimalField(max_digits=5, decimal_places=2,default=0)
+    Edificio_consumo_Agua = models.DecimalField(max_digits=5, decimal_places=2,default=0.3)
+    Edificio_consumo_Aceite = models.DecimalField(max_digits=5, decimal_places=2,default=0.3)
     #Kilogramos de CO2 por kWh
     Edificio_consumo_Electricidad = models.DecimalField(max_digits=5, decimal_places=2,default=0.35)
     #Kilogramos de CO2 por Kg de propano

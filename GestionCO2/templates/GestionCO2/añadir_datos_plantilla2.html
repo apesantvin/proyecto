@@ -4,23 +4,33 @@
     <div class='titulo_pagina'>
         <h2>Añadir {{title}}</h2>
     </div>
-    {% if error != 'Error' %}
-        <div class="Error">
-            <p>{{error}}<strong>{{empresa.nombre_empresa}}</strong></p>
+    {% if error != 1%}
+        <div class="form-group">
+            {% if messages %}
+                <ul class="messages">
+                    {% for message in messages %}
+                        <div class="alert alert-success"> 
+                        <p class="glyphicon glyphicon-ok-sign"></p>
+                        {{message}}
+                        </div>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+    {% else %}
+    <div class="form-group-error">
+            {% if messages %}
+                <ul class="messages">
+                    {% for message in messages %}
+                      <div class="alert alert-error"> 
+                            <p class="glyphicon glyphicon-remove-sign"></p>
+                            {{message}}
+                            </div>
+                    {% endfor %}
+                </ul>
+            {% endif %}
         </div>
     {% endif %}
-    <div class="form-group">
-        {% if messages %}
-            <ul class="messages">
-                {% for message in messages %}
-                    <div class="alert alert-success"> 
-                    <p class="glyphicon glyphicon-ok-sign"></p>
-                    {{message}}
-                    </div>
-                {% endfor %}
-            </ul>
-        {% endif %}
-    </div>
     <form  role="form" class="formulario_añadir" enctype="multipart/form-data" action="." method="POST"> 
         {% csrf_token %}
         {% if edificios %}

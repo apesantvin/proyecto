@@ -179,7 +179,7 @@ form {
     float: right;
     width:95%;
 }
-.form-group-error{
+.alert {
     background-color:#fea2a2
 }
 .usuario{

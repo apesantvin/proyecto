@@ -5,7 +5,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.contrib.auth import login as do_login
 from django.contrib.auth.decorators import login_required
-import sqlite3, csv
+import sqlite3, csv, datetime
 from django.contrib import messages
 from datetime import date
 
@@ -37,7 +37,13 @@ def empresa_lista(request):
         return render(request, 'GestionCO2/lista_empresas.html', {'datos':[],'indexado':[]})
 def empresa_detalles(request,pk):
     empresa = get_object_or_404(Empresa, pk=pk)
-    return render(request, 'GestionCO2/empresa_detalles_principales.html', {'empresa': empresa})
+    min_year=calcular_year_minimo(empresa)
+    consumos=Factores_conversion.objects.first()
+    co2_anual=calcular_CO2_year(pk, min_year,consumos)
+    co2_edificios=calcular_CO2_edificios(pk, min_year,consumos)
+    co2_vehiculos=calcular_CO2_vehiculos(pk, min_year,consumos)
+    co2_viajes=calcular_CO2_viajes(pk, min_year)
+    return render(request, 'GestionCO2/empresa_detalles_principales.html', {'empresa': empresa, 'anual':co2_anual, 'edificios':co2_edificios, 'vehiculos':co2_vehiculos, 'viajes':co2_viajes})
 @login_required
 def empresa_configuracion(request, pk):
     e = get_object_or_404(Empresa, pk=pk)
@@ -194,22 +200,27 @@ def añadir_vehiculo(request, pk):
 @login_required
 def añadir_generador(request, pk):
     e = get_object_or_404(Empresa, pk=pk)
-    error='Error'
+    error=0
     edificios = Edificio.objects.filter(empresa=e)
     if request.method == "POST":
         form = GeneradorEdificioForm(e,request.POST)
         if form.is_valid():
             generador = form.save(commit=False)
-            generador.save()
-            messages.success(request, 'Energía generada añadido con éxito')
-            return redirect('añadir_generador', pk=e.pk)
+            if generador.fecha_generacion < generador.edificio.fecha_adquisicion:
+                messages.error(request, 'Las fecha de la generación no es correcta. El edificio fue adquirido en una fecha posterior.')
+                error=1
+                return render(request, 'GestionCO2/añadir_datos_plantilla2.html', {'form': form, 'empresa': e, 'title':'Energía Generada', 'error':error, 'edificios':edificios})
+            else:
+                generador.save()
+                messages.success(request, 'Energía generada añadido con éxito')
+                return redirect('añadir_generador', pk=e.pk)
     else:
         form = GeneradorEdificioForm(e)
     return render(request, 'GestionCO2/añadir_datos_plantilla2.html', {'form': form, 'empresa': e, 'title':'Energía Generada', 'error':error, 'edificios':edificios})
 @login_required
 def añadir_viaje(request, pk):
     e = get_object_or_404(Empresa, pk=pk)
-    error='Error'
+    error='ERROR'
     personal = Personal.objects.filter(empresa=e)
     if request.method == "POST":
         form = ViajeForm(e,request.POST)
@@ -224,15 +235,20 @@ def añadir_viaje(request, pk):
 @login_required
 def añadir_consumoEdificio(request, pk):
     e = get_object_or_404(Empresa, pk=pk)
-    error='Error'
+    error=0
     edificios = Edificio.objects.filter(empresa=e)
     if request.method == "POST":
         form = ConsumoEdificioForm(e,request.POST)
         if form.is_valid():
             consumo = form.save(commit=False)
-            consumo.save()
-            messages.success(request, 'Consumo edificio añadido con éxito')
-            return redirect('añadir_consumoEdificio', pk=e.pk)
+            if consumo.fecha_consumo < consumo.edificio.fecha_adquisicion:
+                messages.error(request, 'Las fecha de la generación no es correcta. El edificio fue adquirido en una fecha posterior.')
+                error=1
+                return render(request, 'GestionCO2/añadir_datos_plantilla2.html', {'form': form, 'empresa': e, 'title':'Consumo de Edificio', 'error':error, 'edificios':edificios})
+            else:
+                consumo.save()
+                messages.success(request, 'Consumo edificio añadido con éxito')
+                return redirect('añadir_consumoEdificio', pk=e.pk)
     else:
         form = ConsumoEdificioForm(e)
     return render(request, 'GestionCO2/añadir_datos_plantilla2.html', {'form': form, 'empresa': e, 'title':'Consumo de Edificio', 'error':error, 'edificios':edificios})
@@ -246,9 +262,22 @@ def añadir_consumoVehiculo(request, pk):
         form = ConsumoVehiculoForm(e,request.POST)
         if form.is_valid():
             consumo = form.save(commit=False)
-            consumo.save()
-            messages.success(request, 'Consumo vehículo añadido con éxito')
-            return redirect('añadir_consumoVehiculo', pk=e.pk)
+            if consumo.fecha_consumo < consumo.vehiculo.fecha_compra:
+                messages.error(request, 'Las fecha de la generación no es correcta. El vehículo fue adquirido en una fecha posterior.')
+                error=1
+                if consumo.fecha_consumo < consumo.personal.fecha_contratacion:
+                    messages.error(request, 'Las fecha de la generación no es correcta. La persona fue contratada en una fecha posterior.')
+                    error=1
+                return render(request, 'GestionCO2/añadir_VehiculoConsumo.html', {'form': form, 'empresa': e, 'title':'Consumo de Vehiculo', 'error':error, 'vehiculo':vehiculo, 'personal':personal})
+            else:
+                if consumo.fecha_consumo < consumo.personal.fecha_contratacion:
+                    messages.error(request, 'Las fecha de la generación no es correcta. La persona fue contratada en una fecha posterior.')
+                    error=1
+                    return render(request, 'GestionCO2/añadir_VehiculoConsumo.html', {'form': form, 'empresa': e, 'title':'Consumo de Vehiculo', 'error':error, 'vehiculo':vehiculo, 'personal':personal})
+                else:
+                    consumo.save()
+                    messages.success(request, 'Consumo vehículo añadido con éxito')
+                    return redirect('añadir_consumoVehiculo', pk=e.pk)
     else:
         form = ConsumoVehiculoForm(e)
     return render(request, 'GestionCO2/añadir_VehiculoConsumo.html', {'form': form, 'empresa': e, 'title':'Consumo de Vehiculo', 'error':error, 'vehiculo':vehiculo, 'personal':personal})
@@ -361,71 +390,175 @@ def mensajes_todos_experto(request):
             no_experto=1;
     if no_experto==1:
         return render(request, 'experto/base_base_experto.html', {'experto':no_experto})
-#Vistas CO2 generador
-def clacular_CO2_años(request, pk):
-    empresa=Empresa.get_object_or_404(Empresa, pk=pk)
+#Vistas CO2 generado
+#Calcular CO2 generado por la empresa en todos los años
+def calcular_CO2_year(pk, min_year, consumos):
+    empresa=get_object_or_404(Empresa, pk=pk)
     today_year=date.today().year
-    consumos=get_object_or_404(Factores_conversion, pk=1)
-    co2_años=[]
-    for year in range(today_year-4, today_year+1):
-        #falta restar el valor de los generadores a los consumos de electricidad del edificio
-        edificio=edificio_años(empresa, year, consumos)
-        vehiculo=vehiculo_años(empresa, year, consumos)
-        co2_años.append(edificio+vehiculo+viaje)
-        
-
+    matriz_co2=[]
+    for year in range(min_year, today_year+1):
+        co2_year=[]
+        co2_year.append(year)
+        edificio=edificio_year(empresa, year, consumos)
+        vehiculo=vehiculo_year(empresa, year, consumos)
+        viaje=viaje_year(empresa, year)
+        co2_year.append(edificio+vehiculo+viaje)
+        matriz_co2.append(co2_year)
+    return matriz_co2
+#Calcular CO2 generado por los edificios de la empresa en todos los años
+def calcular_CO2_edificios(pk, min_year, consumos):
+    empresa=get_object_or_404(Empresa, pk=pk)
+    today_year=date.today().year
+    matriz_co2=[]
+    for year in range(min_year, today_year+1):
+        co2_edificio=[]
+        co2_edificio.append(year)
+        co2_edificio.append(edificio_year(empresa, year, consumos))
+        matriz_co2.append(co2_edificio)
+    return matriz_co2
+#Calcular CO2 generado por los vehiculos de la empresa en todos los años
+def calcular_CO2_vehiculos(pk, min_year, consumos):
+    empresa=get_object_or_404(Empresa, pk=pk)
+    today_year=date.today().year
+    matriz_co2=[]
+    for year in range(min_year, today_year+1):
+        co2_vehiculos=[]
+        co2_vehiculos.append(year)
+        co2_vehiculos.append(vehiculo_year(empresa, year, consumos))
+        matriz_co2.append(co2_vehiculos)
+    return matriz_co2
+#Calcular CO2 generado por los viajes de la empresa en todos los años
+def calcular_CO2_viajes(pk, min_year):
+    empresa=get_object_or_404(Empresa, pk=pk)
+    today_year=date.today().year
+    matriz_co2=[]
+    for year in range(min_year, today_year+1):
+        co2_viajes=[]
+        co2_viajes.append(year)
+        co2_viajes.append(viaje_year(empresa, year))
+        matriz_co2.append(co2_viajes)
+    return matriz_co2
+#Calculo del menor año del que ce conoce consumo
+def calcular_year_minimo(empresa):
+    fecha_consumo='fecha_consumo'
+    edificios=Edificio.objects.filter(empresa=empresa)
+    vehiculos=Vehiculo.objects.filter(empresa=empresa)
+    personal=Personal.objects.filter(empresa=empresa)
+    viajes=Viaje.objects.all()
+    fecha_edificio=timezone.now().date()
+    fecha_vehiculo=timezone.now().date()
+    fecha_persona=timezone.now().date()
+    for edificio in edificios:
+        consumo_edificio=EdificioConsumo.objects.filter(edificio=edificio).order_by('fecha_consumo')
+        fecha_edificio=min(fecha_edificio, consumo_edificio[0].fecha_consumo)
+    for vehiculo in vehiculos:
+        consumo_vehiculo=VehiculoConsumo.objects.filter(vehiculo=vehiculo).order_by('fecha_consumo')
+        fecha_vehiculo=min(fecha_vehiculo, consumo_vehiculo[0].fecha_consumo)
+    for viaje in viajes:
+        personas=viaje.personal.all()
+        for persona in personas:
+            if persona.empresa==empresa:
+                fecha_persona=min(fecha_persona,viaje.fecha_viaje)
+    fecha_minima=min(fecha_persona,fecha_vehiculo,fecha_edificio)
+    return fecha_minima.year
 #CO2 generado por los edificios de una empresa en un año determinado
-def edificio_años(empresa, year, consumo):
+def edificio_year(empresa, year, consumo):
     edificios_consumos=[]
     fecha_edificio='fecha_adquisicion'
-    edificios=Edificio.objects.filter(empresa=empresa)
+    edificios=Edificio.objects.filter(empresa=empresa).order_by(fecha_edificio)
     consumo_edificios=0;
-    for edificio in edificio:
-        fecha=edificio.fecha_contratacion.year
+    for edificio in edificios:
+        fecha=edificio.fecha_adquisicion.year
         if (fecha <= year):
             consumo_edificios=consumo_edificios+edificio_consumo(edificio, year, consumo)
     return consumo_edificios
-        
 #Co2 generado en un edificio y un año                
 def edificio_consumo(edificio, year, consumo):
     agua=edificio_consumo_tipo(edificio, year, consumo.Edificio_consumo_Agua,'1')
-    electricidad=edificio_consumo_tipo(edificio, year, consumo.Edificio_consumo_Electricidad,'2')
+    electricidad=edificio_consumo_elec(edificio, year, consumo.Edificio_consumo_Electricidad,'2')
     aceite=edificio_consumo_tipo(edificio, year, consumo.Edificio_consumo_Aceite,'3')
-    propano=edificio_consumo_tipo(edificio, year, consumo.Edificio_Consumo_Propano,'4')
+    propano=edificio_consumo_tipo(edificio, year, consumo.Edificio_consumo_Propano,'4')
     gasNatural=edificio_consumo_tipo(edificio, year, consumo.Edificio_consumo_GasNatural,'5')
     return agua+aceite+electricidad+propano+gasNatural
 #Co2 generado por un consumo en un edificio y un año
 def edificio_consumo_tipo(edificio, year, consumo, tipo):
-    total_consumo=0;
+    total_consumo=0
     consumos=EdificioConsumo.objects.filter(edificio=edificio,tipo=tipo)
     for c in consumos:
         fecha=c.fecha_consumo.year
         if (fecha==year):
             total_consumo=total_consumo+(float(c.cantidad_consumida)*float(consumo))
-                
+    return total_consumo
+def edificio_consumo_elec(edificio, year, consumo, tipo):
+    total_consumo=0;
+    consumos=EdificioConsumo.objects.filter(edificio=edificio,tipo=tipo).order_by('fecha_consumo')
+    fecha_ant=date(year-1,12,31)
+    fecha=date(year,1,1)
+    generado=0
+    indice=0
+    huella=0
+    while fecha.year<year+1 and indice<len(consumos):
+        if fecha_ant<fecha:
+            generado=generado+calcular_energiaGenerada(edificio, fecha)
+        if consumos[indice].fecha_consumo==fecha:
+            co2=float(consumos[indice].cantidad_consumida)-generado
+            fecha_ant=fecha
+            indice=indice+1
+            if co2<=0:
+                generado=abs(co2)
+                huella = huella+0
+            else:
+                huella=huella+co2*float(consumo)
+        elif consumos[indice].fecha_consumo<fecha:
+            fecha_ant=fecha
+            indice=indice+1
+        else:
+            fecha=fecha+datetime.timedelta(days=1)
+    return huella
+#Energía generada de por generadores (no genera co2)
+def calcular_energiaGenerada(edificio, fecha):
+    generado=0
+    generadores=Generador.objects.filter(edificio=edificio, fecha_generacion=fecha)
+    for generador in generadores:
+        generado=generado+float(generador.cantidad_generada)
+    return generado                
 #CO2 generado por los vehiculos de una empresa en año determinado
-def vehiculo_años(empresa, year, consumo):
+def vehiculo_year(empresa, year, consumo):
     fecha_vehiculo='fecha_compra'
-    vehiculos=Vehiculo.objects.filter(empresa=empresa).order_by(fecha_edificio)
+    vehiculos=Vehiculo.objects.filter(empresa=empresa).order_by(fecha_vehiculo)
     consumo_vehiculo=0;
     for vehiculo in vehiculos:
         fecha=vehiculo.fecha_compra.year
         if (fecha <= year):
             consumo_vehiculo=consumo_vehiculo+vehiculo_consumo(vehiculo, year, consumo)
     return consumo_vehiculo
-        
 #Co2 generado en un vehiculo y un año                
 def vehiculo_consumo(vehiculo, year, consumo):
     electricidad=vehiculo_consumo_tipo(vehiculo, year, consumo.Vehiculo_consumo_Electricidad,'1')
     gasolina=vehiculo_consumo_tipo(vehiculo, year, consumo.Vehiculo_consumo_Gasolina,'2')
     diesel=vehiculo_consumo_tipo(vehiculo, year, consumo.Vehiculo_consumo_Diesel,'3')
     return electricidad+gasolina+diesel
-
 #Co2 generado por un consumo en un vehiculo y un año
 def vehiculo_consumo_tipo(vehiculo, year, consumo, tipo):
     total_consumo=0;
-    consumos=VehículoConsumo.objects.filter(vehiculo=vehiculo,tipo=tipo)
+    consumos=VehiculoConsumo.objects.filter(vehiculo=vehiculo,tipo=tipo)
     for c in consumos:
         fecha=c.fecha_consumo.year
         if (fecha==year):
             total_consumo=total_consumo+(float(c.cantidad_consumida)*float(consumo))
+    return total_consumo
+#CO2 generado por los viajes de una empresa en año determinado
+def viaje_year(empresa, year):
+    co2_total=0;
+    viajes=Viaje.objects.all()
+    for viaje in viajes:
+        fecha=viaje.fecha_viaje.year
+        if (fecha==year):
+            v='ok'
+            personas=viaje.personal.all()
+            for p in personas:
+                if p.empresa != empresa:
+                    v='not'
+            if v=='ok':
+                co2_total=co2_total+float(viaje.co2)
+    return co2_total

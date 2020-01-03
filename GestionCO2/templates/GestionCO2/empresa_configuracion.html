@@ -1,15 +1,21 @@
 {% extends 'GestionCO2/empresa_detalles.html' %}
 
 {% block content_1 %}
-    <div class='user-config'>
-        <div class="form-group-error">
+        <div class="form-group">
         {% if messages %}
             <ul class="messages">
                 {% for message in messages %}
-                    <div class="alert alert-error"> 
-                    <p class="glyphicon glyphicon-remove-sign"></p>
-                    {{message}}
-                    </div>
+                    {% if error != 1%}
+                        <div class="alert alert-success"> 
+                            <p class="glyphicon glyphicon-ok-sign"></p>
+                            {{message}}
+                        </div>
+                    {% else %}
+                        <div class="alert alert-success"> 
+                            <p class="glyphicon glyphicon-remove-sign"></p>
+                            {{message}}
+                        </div>
+                    {% endif %}
                 {% endfor %}
             </ul>
         {% endif %}
