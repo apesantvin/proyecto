@@ -356,8 +356,8 @@ def clacular_CO2_años(request, pk):
     consumos=get_object_or_404(Factores_conversion, pk=1)
     co2_años=[]
     for year in range(today_year-4, today_year+1):
-        generadores=
-        edificio=edificio_años(empresa, year, consumos, generadores)
+        #falta restar el valor de los generadores a los consumos de electricidad del edificio
+        edificio=edificio_años(empresa, year, consumos)
         vehiculo=vehiculo_años(empresa, year, consumos)
         co2_años.append(edificio+vehiculo+viaje)
         
@@ -388,7 +388,7 @@ def edificio_consumo_tipo(edificio, year, consumo, tipo):
     consumos=EdificioConsumo.objects.filter(edificio=edificio,tipo=tipo)
     for c in consumos:
         fecha=c.fecha_consumo.year
-        if (fecha=year):
+        if (fecha==year):
             total_consumo=total_consumo+(float(c.cantidad_consumida)*float(consumo))
                 
 #CO2 generado por los vehiculos de una empresa en año determinado
@@ -415,5 +415,5 @@ def vehiculo_consumo_tipo(vehiculo, year, consumo, tipo):
     consumos=VehículoConsumo.objects.filter(vehiculo=vehiculo,tipo=tipo)
     for c in consumos:
         fecha=c.fecha_consumo.year
-        if (fecha=year):
+        if (fecha==year):
             total_consumo=total_consumo+(float(c.cantidad_consumida)*float(consumo))
