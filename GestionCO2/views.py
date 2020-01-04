@@ -38,12 +38,17 @@ def empresa_lista(request):
 def empresa_detalles(request,pk):
     empresa = get_object_or_404(Empresa, pk=pk)
     min_year=calcular_year_minimo(empresa)
+    if min_year==0:
+        datos=0
+        min_year=timezone.now().year
+    else:
+        datos=1
     consumos=Factores_conversion.objects.first()
     co2_anual=calcular_CO2_year(pk, min_year,consumos)
     co2_edificios=calcular_CO2_edificios(pk, min_year,consumos)
     co2_vehiculos=calcular_CO2_vehiculos(pk, min_year,consumos)
     co2_viajes=calcular_CO2_viajes(pk, min_year)
-    return render(request, 'GestionCO2/empresa_detalles_principales.html', {'empresa': empresa, 'anual':co2_anual, 'edificios':co2_edificios, 'vehiculos':co2_vehiculos, 'viajes':co2_viajes})
+    return render(request, 'GestionCO2/empresa_detalles_principales.html', {'empresa': empresa, 'anual':co2_anual, 'edificios':co2_edificios, 'vehiculos':co2_vehiculos, 'viajes':co2_viajes, 'datos':datos})
 @login_required
 def empresa_configuracion(request, pk):
     e = get_object_or_404(Empresa, pk=pk)
@@ -448,19 +453,30 @@ def calcular_year_minimo(empresa):
     fecha_edificio=timezone.now().date()
     fecha_vehiculo=timezone.now().date()
     fecha_persona=timezone.now().date()
+    ed=0
+    ve=0
+    vi=0
     for edificio in edificios:
         consumo_edificio=EdificioConsumo.objects.filter(edificio=edificio).order_by('fecha_consumo')
-        fecha_edificio=min(fecha_edificio, consumo_edificio[0].fecha_consumo)
+        if consumo_edificio.count() != 0:
+            fecha_edificio=min(fecha_edificio, consumo_edificio[0].fecha_consumo)
+            ed=ed+1
     for vehiculo in vehiculos:
         consumo_vehiculo=VehiculoConsumo.objects.filter(vehiculo=vehiculo).order_by('fecha_consumo')
-        fecha_vehiculo=min(fecha_vehiculo, consumo_vehiculo[0].fecha_consumo)
+        if consumo_vehiculo.count() != 0:
+            fecha_vehiculo=min(fecha_vehiculo, consumo_vehiculo[0].fecha_consumo)
+            vi=vi+1
     for viaje in viajes:
         personas=viaje.personal.all()
         for persona in personas:
             if persona.empresa==empresa:
                 fecha_persona=min(fecha_persona,viaje.fecha_viaje)
+                ve=ve+1
     fecha_minima=min(fecha_persona,fecha_vehiculo,fecha_edificio)
-    return fecha_minima.year
+    if ed==0 and ve==0 and vi==0:
+        return 0
+    else:
+        return fecha_minima.year
 #CO2 generado por los edificios de una empresa en un año determinado
 def edificio_year(empresa, year, consumo):
     edificios_consumos=[]

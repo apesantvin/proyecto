@@ -5,14 +5,21 @@
         {{empresa.descripcion}}
     </div>
     <br /><br />
-    <p> Aqui pondrémos graficas, una tabla y cosas así </p>
-    <br /><br />
-    CO2 total -> {{anual}}
-    <br /><br />
-    CO2 por edificio -> {{edificios}}
-    <br /><br />
-    CO2 por vehiculo -> {{vehiculos}}
-    <br /><br />
-    CO2 por viaje -> {{viajes}}
-    <br /><br />
+    {% if datos == 0%}
+        <div class="fallo-empresa">
+        <p> No tenemos datos de esta empresa. </p>
+        {% if user == empresa.usuario %}
+            <p> Para añadir datos pulse configuración y añadelos manualmente o a través de un archivo csv. </p>
+        {% endif %}
+        </div>
+    {% else %}
+        CO2 total -> {{anual}}
+        <br /><br />
+        CO2 por edificio -> {{edificios}}
+        <br /><br />
+        CO2 por vehiculo -> {{vehiculos}}
+        <br /><br />
+        CO2 por viaje -> {{viajes}}
+        <br /><br />
+    {% endif %}
 {% endblock %}

@@ -150,6 +150,12 @@ form {
     font-size: 15;
 }
 
+.fallo-empresa p{
+    color:#000000;
+    font-family: "Roboto",sans-serif;
+    font-size: 15;
+}
+
 .formulario{
     width: 70%;
     float: right;
@@ -256,6 +262,10 @@ form {
 .post-form, .post-form{
     width:450px;
     float: center;
+}
+
+.btn{
+    padding: 2px 15px;
 }
 
 @media screen and (max-width: 800px){
