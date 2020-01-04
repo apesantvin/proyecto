@@ -8,6 +8,8 @@ from django.contrib.auth.decorators import login_required
 import sqlite3, csv, datetime
 from django.contrib import messages
 from datetime import date
+import altair as alt
+import pandas as pd
 
 #Vistas Empresa
 def empresa_lista(request):
@@ -35,6 +37,7 @@ def empresa_lista(request):
         return render(request, 'GestionCO2/lista_empresas.html', {'datos':letras_palabras,'indexado':letras})
     else:
         return render(request, 'GestionCO2/lista_empresas.html', {'datos':[],'indexado':[]})
+
 def empresa_detalles(request,pk):
     empresa = get_object_or_404(Empresa, pk=pk)
     min_year=calcular_year_minimo(empresa)
@@ -48,7 +51,23 @@ def empresa_detalles(request,pk):
     co2_edificios=calcular_CO2_edificios(pk, min_year,consumos)
     co2_vehiculos=calcular_CO2_vehiculos(pk, min_year,consumos)
     co2_viajes=calcular_CO2_viajes(pk, min_year)
+    fecha1=[]
+    cantidad1=[]
+    for dato in co2_anual:
+        fecha1.append(dato[0])
+        cantidad1.append(dato[1])
+    source = pd.DataFrame({
+            'a': fecha1,
+            'b': cantidad1
+            })
+
+    grafico=alt.Chart(source).mark_bar().encode(
+        x='a',
+        y='b'
+    )
+    grafico.save('GestionCO2/templates/graficos/grafico.html', embed_options={'renderer':'svg'})
     return render(request, 'GestionCO2/empresa_detalles_principales.html', {'empresa': empresa, 'anual':co2_anual, 'edificios':co2_edificios, 'vehiculos':co2_vehiculos, 'viajes':co2_viajes, 'datos':datos})
+
 @login_required
 def empresa_configuracion(request, pk):
     e = get_object_or_404(Empresa, pk=pk)
@@ -115,21 +134,24 @@ def empresa_configuracion(request, pk):
     else:
         form = leercsv()
     return render(request, 'GestionCO2/empresa_configuracion.html', {'empresa': e,'form': form})
+
 @login_required
 def añadir_datos_empresa(request, pk):
     empresa = get_object_or_404(Empresa, pk=pk)
     return render(request, 'GestionCO2/añadir_datos_empresa.html', {'empresa': empresa})
+
 @login_required
 def mensajes(request, pk):
     e = get_object_or_404(Empresa, pk=pk)
     lista_mensajes = Mensaje.objects.filter(empresa=e)
     return render(request, 'GestionCO2/mensajes.html',  {'empresa': e, 'lista_mensajes':lista_mensajes})
+
 @login_required
 def mensaje_detalles(request, pk, mensajePK):
     e = get_object_or_404(Empresa, pk=pk)
     m = get_object_or_404(Mensaje, pk=mensajePK)
     return render(request, 'GestionCO2/mensaje_detalles.html',  {'empresa': e, 'm' : m})
-#Vistas añadir datos manualmente
+
 @login_required
 def añadir_mensaje(request, pk):
     e = get_object_or_404(Empresa, pk=pk)
@@ -144,6 +166,7 @@ def añadir_mensaje(request, pk):
     else:
         form = mensajeForm()
     return render(request, 'GestionCO2/añadir_mensaje.html', {'empresa': e, 'form':form})
+
 @login_required
 def añadir_empresa(request):
     if request.method == "POST":
@@ -158,6 +181,7 @@ def añadir_empresa(request):
     else:
         form = EmpresaForm()
     return render(request, 'GestionCO2/añadir_empresa.html', {'form': form} )
+
 @login_required
 def añadir_personal(request, pk):
     empresa = get_object_or_404(Empresa, pk=pk)
@@ -173,6 +197,7 @@ def añadir_personal(request, pk):
     else:
         form = PersonalEmpresaForm()
     return render(request, 'GestionCO2/añadir_datos_plantilla1.html', {'form': form, 'empresa': empresa, 'title':'Personal', 'error':error})
+
 @login_required
 def añadir_edificio(request, pk):
     empresa = get_object_or_404(Empresa, pk=pk)
@@ -187,6 +212,7 @@ def añadir_edificio(request, pk):
     else:
         form = EdificioEmpresaForm()
     return render(request, 'GestionCO2/añadir_datos_plantilla1.html', {'form': form, 'empresa': empresa, 'title':'Edificio', 'error':'Error'})
+
 @login_required
 def añadir_vehiculo(request, pk):
     empresa = get_object_or_404(Empresa, pk=pk)
@@ -202,6 +228,7 @@ def añadir_vehiculo(request, pk):
     else:
         form = VehiculoEdificioForm()
     return render(request, 'GestionCO2/añadir_datos_plantilla1.html', {'form': form, 'empresa': empresa, 'title':'Vehículo', 'error':error})
+
 @login_required
 def añadir_generador(request, pk):
     e = get_object_or_404(Empresa, pk=pk)
@@ -222,6 +249,7 @@ def añadir_generador(request, pk):
     else:
         form = GeneradorEdificioForm(e)
     return render(request, 'GestionCO2/añadir_datos_plantilla2.html', {'form': form, 'empresa': e, 'title':'Energía Generada', 'error':error, 'edificios':edificios})
+
 @login_required
 def añadir_viaje(request, pk):
     e = get_object_or_404(Empresa, pk=pk)
@@ -237,6 +265,7 @@ def añadir_viaje(request, pk):
     else:
         form = ViajeForm(e)
     return render(request, 'GestionCO2/añadir_datos_plantilla2.html', {'form': form, 'empresa': e, 'title':'Viaje', 'error':error, 'edificios':personal})
+
 @login_required
 def añadir_consumoEdificio(request, pk):
     e = get_object_or_404(Empresa, pk=pk)
@@ -257,6 +286,7 @@ def añadir_consumoEdificio(request, pk):
     else:
         form = ConsumoEdificioForm(e)
     return render(request, 'GestionCO2/añadir_datos_plantilla2.html', {'form': form, 'empresa': e, 'title':'Consumo de Edificio', 'error':error, 'edificios':edificios})
+
 @login_required
 def añadir_consumoVehiculo(request, pk):
     e = get_object_or_404(Empresa, pk=pk)
@@ -286,7 +316,7 @@ def añadir_consumoVehiculo(request, pk):
     else:
         form = ConsumoVehiculoForm(e)
     return render(request, 'GestionCO2/añadir_VehiculoConsumo.html', {'form': form, 'empresa': e, 'title':'Consumo de Vehiculo', 'error':error, 'vehiculo':vehiculo, 'personal':personal})
-#Vista registro
+
 def register(request):
     form = formularioregistroForm()
     form.fields['username'].help_text = None
@@ -300,15 +330,17 @@ def register(request):
                 do_login(request, user)
                 return redirect('pagina_principal')
     return render(request, 'registration/register.html', {'form':form})
-#Vista pantalla principal
+
 def pagina_principal(request):
     return render(request, 'GestionCO2/pagina_principal.html')
+
 #Vistas Experto
 @login_required
 def mensajes_experto(request):
     lista_mensajes = Mensaje.objects.filter(respondido=0)
     explicacion='Aqui podras ver los mensajes que han mandado las empresas y todavía estan sin responder. Pulsando en cada uno de ellos, podrás responder a dicho mensaje. '
     return render(request, 'experto/inicio_experto.html',  {'lista_mensajes':lista_mensajes, 'add':explicacion})
+
 @login_required
 def experto_mensaje(request, mensajePK):
     mensaje = get_object_or_404(Mensaje, pk=mensajePK)
@@ -324,46 +356,55 @@ def experto_mensaje(request, mensajePK):
     else:
         form = RespuestaForm()
     return render(request, 'experto/experto_mensaje.html',  {'form': form, 'm':mensaje})
+
 @login_required
 def mensaje_detalles_experto(request, mensajePK):
     m = get_object_or_404(Mensaje, pk=mensajePK)
     return render(request, 'experto/mensaje_detalles_experto.html',  {'m' : m})
+
 @login_required
 def ask_for_experto(request):
     Experto.objects.create(usuario=request.user, id_usuario=request.user.id)
     return (mensajes_todos_experto(request))
+
 @login_required
 def add_experto(request, expertoPK):
     experto = get_object_or_404(Experto, pk=expertoPK)
     experto.autorizar()
     lista_expertos = Experto.objects.filter(autorizado=0)
     return render(request, 'experto/lista_expertos_añadir.html',  {'lista_expertos':lista_expertos})
+
 @login_required
 def eliminar_peticion_experto(request, expertoPK):
     experto = get_object_or_404(Experto, pk=expertoPK)
     experto.delete()
     lista_expertos = Experto.objects.filter(autorizado=0)
     return render(request, 'experto/lista_expertos_añadir.html',  {'lista_expertos':lista_expertos})
+
 @login_required
 def eliminar_experto_autorizado(request, expertoPK):
     experto = get_object_or_404(Experto, pk=expertoPK)
     experto.desautorizar()
     lista_expertos = Experto.objects.filter(autorizado=0)
     return render(request, 'experto/lista_expertos_eliminar.html',  {'lista_expertos':lista_expertos})
+
 @login_required
 def mensajes_empresa(request, pk):
     empresa = get_object_or_404(Empresa, pk=pk)
     lista_mensajes = Mensaje.objects.filter(empresa=empresa)
     explicacion='Aqui podras ver los mensajes que han mandado la empresa '+str(empresa)+'. Pulsando en cada uno de ellos, podrás ver la respuesta en caso de que tenga, caso contrario podrás responder al mensaje.'
     return render(request, 'experto/lista_mensajes_empresa.html',  {'lista_mensajes':lista_mensajes, 'add':explicacion})
+
 @login_required
 def lista_expertos_añadir(request):
     lista_expertos = Experto.objects.filter(autorizado=0)
     return render(request, 'experto/lista_expertos_añadir.html',  {'lista_expertos':lista_expertos})
+
 @login_required
 def lista_expertos_eliminar(request):
     lista_expertos = Experto.objects.filter(autorizado=1)
     return render(request, 'experto/lista_expertos_eliminar.html',  {'lista_expertos':lista_expertos})
+
 @login_required
 def mensajes_todos_experto(request):
     no_experto=0;
@@ -395,7 +436,118 @@ def mensajes_todos_experto(request):
             no_experto=1;
     if no_experto==1:
         return render(request, 'experto/base_base_experto.html', {'experto':no_experto})
+
 #Vistas CO2 generado
+#CO2 generado por los edificios de una empresa en un año determinado
+def edificio_year(empresa, year, consumo):
+    edificios_consumos=[]
+    fecha_edificio='fecha_adquisicion'
+    edificios=Edificio.objects.filter(empresa=empresa).order_by(fecha_edificio)
+    consumo_edificios=0;
+    for edificio in edificios:
+        fecha=edificio.fecha_adquisicion.year
+        if (fecha <= year):
+            consumo_edificios=consumo_edificios+edificio_consumo(edificio, year, consumo)
+    return consumo_edificios
+
+#Co2 generado en un edificio y un año                
+def edificio_consumo(edificio, year, consumo):
+    agua=edificio_consumo_tipo(edificio, year, consumo.Edificio_consumo_Agua,'1')
+    electricidad=edificio_consumo_elec(edificio, year, consumo.Edificio_consumo_Electricidad,'2')
+    aceite=edificio_consumo_tipo(edificio, year, consumo.Edificio_consumo_Aceite,'3')
+    propano=edificio_consumo_tipo(edificio, year, consumo.Edificio_consumo_Propano,'4')
+    gasNatural=edificio_consumo_tipo(edificio, year, consumo.Edificio_consumo_GasNatural,'5')
+    return agua+aceite+electricidad+propano+gasNatural
+
+#Co2 generado por un consumo en un edificio y un año
+def edificio_consumo_tipo(edificio, year, consumo, tipo):
+    total_consumo=0
+    consumos=EdificioConsumo.objects.filter(edificio=edificio,tipo=tipo)
+    for c in consumos:
+        fecha=c.fecha_consumo.year
+        if (fecha==year):
+            total_consumo=total_consumo+(float(c.cantidad_consumida)*float(consumo))
+    return total_consumo
+
+def edificio_consumo_elec(edificio, year, consumo, tipo):
+    total_consumo=0;
+    consumos=EdificioConsumo.objects.filter(edificio=edificio,tipo=tipo).order_by('fecha_consumo')
+    fecha_ant=date(year-1,12,31)
+    fecha=date(year,1,1)
+    generado=0
+    indice=0
+    huella=0
+    while fecha.year<year+1 and indice<len(consumos):
+        if fecha_ant<fecha:
+            generado=generado+calcular_energiaGenerada(edificio, fecha)
+        if consumos[indice].fecha_consumo==fecha:
+            co2=float(consumos[indice].cantidad_consumida)-generado
+            fecha_ant=fecha
+            indice=indice+1
+            if co2<=0:
+                generado=abs(co2)
+                huella = huella+0
+            else:
+                huella=huella+co2*float(consumo)
+        elif consumos[indice].fecha_consumo<fecha:
+            fecha_ant=fecha
+            indice=indice+1
+        else:
+            fecha=fecha+datetime.timedelta(days=1)
+    return huella
+
+#Energía generada de por generadores (no genera co2)
+def calcular_energiaGenerada(edificio, fecha):
+    generado=0
+    generadores=Generador.objects.filter(edificio=edificio, fecha_generacion=fecha)
+    for generador in generadores:
+        generado=generado+float(generador.cantidad_generada)
+    return generado           
+
+#CO2 generado por los vehiculos de una empresa en año determinado
+def vehiculo_year(empresa, year, consumo):
+    fecha_vehiculo='fecha_compra'
+    vehiculos=Vehiculo.objects.filter(empresa=empresa).order_by(fecha_vehiculo)
+    consumo_vehiculo=0;
+    for vehiculo in vehiculos:
+        fecha=vehiculo.fecha_compra.year
+        if (fecha <= year):
+            consumo_vehiculo=consumo_vehiculo+vehiculo_consumo(vehiculo, year, consumo)
+    return consumo_vehiculo
+
+#Co2 generado en un vehiculo y un año                
+def vehiculo_consumo(vehiculo, year, consumo):
+    electricidad=vehiculo_consumo_tipo(vehiculo, year, consumo.Vehiculo_consumo_Electricidad,'1')
+    gasolina=vehiculo_consumo_tipo(vehiculo, year, consumo.Vehiculo_consumo_Gasolina,'2')
+    diesel=vehiculo_consumo_tipo(vehiculo, year, consumo.Vehiculo_consumo_Diesel,'3')
+    return electricidad+gasolina+diesel
+
+#Co2 generado por un consumo en un vehiculo y un año
+def vehiculo_consumo_tipo(vehiculo, year, consumo, tipo):
+    total_consumo=0;
+    consumos=VehiculoConsumo.objects.filter(vehiculo=vehiculo,tipo=tipo)
+    for c in consumos:
+        fecha=c.fecha_consumo.year
+        if (fecha==year):
+            total_consumo=total_consumo+(float(c.cantidad_consumida)*float(consumo))
+    return total_consumo
+
+#CO2 generado por los viajes de una empresa en año determinado
+def viaje_year(empresa, year):
+    co2_total=0;
+    viajes=Viaje.objects.all()
+    for viaje in viajes:
+        fecha=viaje.fecha_viaje.year
+        if (fecha==year):
+            v='ok'
+            personas=viaje.personal.all()
+            for p in personas:
+                if p.empresa != empresa:
+                    v='not'
+            if v=='ok':
+                co2_total=co2_total+float(viaje.co2)
+    return co2_total
+
 #Calcular CO2 generado por la empresa en todos los años
 def calcular_CO2_year(pk, min_year, consumos):
     empresa=get_object_or_404(Empresa, pk=pk)
@@ -410,6 +562,7 @@ def calcular_CO2_year(pk, min_year, consumos):
         co2_year.append(edificio+vehiculo+viaje)
         matriz_co2.append(co2_year)
     return matriz_co2
+
 #Calcular CO2 generado por los edificios de la empresa en todos los años
 def calcular_CO2_edificios(pk, min_year, consumos):
     empresa=get_object_or_404(Empresa, pk=pk)
@@ -421,6 +574,7 @@ def calcular_CO2_edificios(pk, min_year, consumos):
         co2_edificio.append(edificio_year(empresa, year, consumos))
         matriz_co2.append(co2_edificio)
     return matriz_co2
+
 #Calcular CO2 generado por los vehiculos de la empresa en todos los años
 def calcular_CO2_vehiculos(pk, min_year, consumos):
     empresa=get_object_or_404(Empresa, pk=pk)
@@ -432,6 +586,7 @@ def calcular_CO2_vehiculos(pk, min_year, consumos):
         co2_vehiculos.append(vehiculo_year(empresa, year, consumos))
         matriz_co2.append(co2_vehiculos)
     return matriz_co2
+
 #Calcular CO2 generado por los viajes de la empresa en todos los años
 def calcular_CO2_viajes(pk, min_year):
     empresa=get_object_or_404(Empresa, pk=pk)
@@ -443,6 +598,7 @@ def calcular_CO2_viajes(pk, min_year):
         co2_viajes.append(viaje_year(empresa, year))
         matriz_co2.append(co2_viajes)
     return matriz_co2
+
 #Calculo del menor año del que ce conoce consumo
 def calcular_year_minimo(empresa):
     fecha_consumo='fecha_consumo'
@@ -477,104 +633,3 @@ def calcular_year_minimo(empresa):
         return 0
     else:
         return fecha_minima.year
-#CO2 generado por los edificios de una empresa en un año determinado
-def edificio_year(empresa, year, consumo):
-    edificios_consumos=[]
-    fecha_edificio='fecha_adquisicion'
-    edificios=Edificio.objects.filter(empresa=empresa).order_by(fecha_edificio)
-    consumo_edificios=0;
-    for edificio in edificios:
-        fecha=edificio.fecha_adquisicion.year
-        if (fecha <= year):
-            consumo_edificios=consumo_edificios+edificio_consumo(edificio, year, consumo)
-    return consumo_edificios
-#Co2 generado en un edificio y un año                
-def edificio_consumo(edificio, year, consumo):
-    agua=edificio_consumo_tipo(edificio, year, consumo.Edificio_consumo_Agua,'1')
-    electricidad=edificio_consumo_elec(edificio, year, consumo.Edificio_consumo_Electricidad,'2')
-    aceite=edificio_consumo_tipo(edificio, year, consumo.Edificio_consumo_Aceite,'3')
-    propano=edificio_consumo_tipo(edificio, year, consumo.Edificio_consumo_Propano,'4')
-    gasNatural=edificio_consumo_tipo(edificio, year, consumo.Edificio_consumo_GasNatural,'5')
-    return agua+aceite+electricidad+propano+gasNatural
-#Co2 generado por un consumo en un edificio y un año
-def edificio_consumo_tipo(edificio, year, consumo, tipo):
-    total_consumo=0
-    consumos=EdificioConsumo.objects.filter(edificio=edificio,tipo=tipo)
-    for c in consumos:
-        fecha=c.fecha_consumo.year
-        if (fecha==year):
-            total_consumo=total_consumo+(float(c.cantidad_consumida)*float(consumo))
-    return total_consumo
-def edificio_consumo_elec(edificio, year, consumo, tipo):
-    total_consumo=0;
-    consumos=EdificioConsumo.objects.filter(edificio=edificio,tipo=tipo).order_by('fecha_consumo')
-    fecha_ant=date(year-1,12,31)
-    fecha=date(year,1,1)
-    generado=0
-    indice=0
-    huella=0
-    while fecha.year<year+1 and indice<len(consumos):
-        if fecha_ant<fecha:
-            generado=generado+calcular_energiaGenerada(edificio, fecha)
-        if consumos[indice].fecha_consumo==fecha:
-            co2=float(consumos[indice].cantidad_consumida)-generado
-            fecha_ant=fecha
-            indice=indice+1
-            if co2<=0:
-                generado=abs(co2)
-                huella = huella+0
-            else:
-                huella=huella+co2*float(consumo)
-        elif consumos[indice].fecha_consumo<fecha:
-            fecha_ant=fecha
-            indice=indice+1
-        else:
-            fecha=fecha+datetime.timedelta(days=1)
-    return huella
-#Energía generada de por generadores (no genera co2)
-def calcular_energiaGenerada(edificio, fecha):
-    generado=0
-    generadores=Generador.objects.filter(edificio=edificio, fecha_generacion=fecha)
-    for generador in generadores:
-        generado=generado+float(generador.cantidad_generada)
-    return generado                
-#CO2 generado por los vehiculos de una empresa en año determinado
-def vehiculo_year(empresa, year, consumo):
-    fecha_vehiculo='fecha_compra'
-    vehiculos=Vehiculo.objects.filter(empresa=empresa).order_by(fecha_vehiculo)
-    consumo_vehiculo=0;
-    for vehiculo in vehiculos:
-        fecha=vehiculo.fecha_compra.year
-        if (fecha <= year):
-            consumo_vehiculo=consumo_vehiculo+vehiculo_consumo(vehiculo, year, consumo)
-    return consumo_vehiculo
-#Co2 generado en un vehiculo y un año                
-def vehiculo_consumo(vehiculo, year, consumo):
-    electricidad=vehiculo_consumo_tipo(vehiculo, year, consumo.Vehiculo_consumo_Electricidad,'1')
-    gasolina=vehiculo_consumo_tipo(vehiculo, year, consumo.Vehiculo_consumo_Gasolina,'2')
-    diesel=vehiculo_consumo_tipo(vehiculo, year, consumo.Vehiculo_consumo_Diesel,'3')
-    return electricidad+gasolina+diesel
-#Co2 generado por un consumo en un vehiculo y un año
-def vehiculo_consumo_tipo(vehiculo, year, consumo, tipo):
-    total_consumo=0;
-    consumos=VehiculoConsumo.objects.filter(vehiculo=vehiculo,tipo=tipo)
-    for c in consumos:
-        fecha=c.fecha_consumo.year
-        if (fecha==year):
-            total_consumo=total_consumo+(float(c.cantidad_consumida)*float(consumo))
-    return total_consumo
-#CO2 generado por los viajes de una empresa en año determinado
-def viaje_year(empresa, year):
-    co2_total=0;
-    viajes=Viaje.objects.all()
-    for viaje in viajes:
-        fecha=viaje.fecha_viaje.year
-        if (fecha==year):
-            v='ok'
-            personas=viaje.personal.all()
-            for p in personas:
-                if p.empresa != empresa:
-                    v='not'
-            if v=='ok':
-                co2_total=co2_total+float(viaje.co2)
-    return co2_total

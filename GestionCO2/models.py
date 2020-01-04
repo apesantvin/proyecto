@@ -203,9 +203,5 @@ class Factores_conversion(models.Model):
     Vehiculo_consumo_Gasolina = models.DecimalField(max_digits=5, decimal_places=3,default=2.157)
     Vehiculo_consumo_Diesel = models.DecimalField(max_digits=5, decimal_places=3,default=2.493)
     
-    #Kilogramos de CO2 por persona en las 8 horas medias de trabajo (0.72 kg * 60 minutos *8 horas)
-    def get_factor_persona(self):
-        return self.persona*60*8
-    
     def __str__(self):
         return 'Factores'+str(self.pk)
