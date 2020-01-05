@@ -258,7 +258,7 @@ def añadir_viaje(request, pk):
     if request.method == "POST":
         form = ViajeForm(e,request.POST)
         if form.is_valid():
-            viaje = form.save(commit=False)
+            viaje = form.save(commit=True)
             viaje.save()
             messages.success(request, 'Viaje añadido con éxito')
             return redirect('añadir_viaje', pk=e.pk)
