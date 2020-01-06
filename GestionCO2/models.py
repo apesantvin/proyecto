@@ -58,7 +58,7 @@ class Edificio(models.Model):
     empresa = models.ForeignKey('Empresa',on_delete=models.CASCADE)
     nombre_edificio= models.CharField(max_length=30)
     localizacion = models.CharField(max_length=50)
-    fecha_adquisicion = models.DateField('Fecha contratación',blank=True, null=True,help_text="<br/>Use el siguiente formato: <em>YYYY-MM-DD</em>.")
+    fecha_adquisicion = models.DateField('Fecha contratación',help_text="<br/>Use el siguiente formato: <em>YYYY-MM-DD</em>.")
     
     def __str__(self):
         return self.nombre_edificio
@@ -97,7 +97,7 @@ class Personal(models.Model):
     empresa = models.ForeignKey('Empresa',on_delete=models.CASCADE)
     nombre_persona = models.CharField('Nombre',max_length=25)
     apellidos_persona= models.CharField('Apellidos',max_length=30)
-    fecha_contratacion = models.DateField('Fecha contratacion',blank=True, null=True,help_text="<br/>Use el siguiente formato: <em>YYYY-MM-DD</em>.")
+    fecha_contratacion = models.DateField('Fecha contratacion',help_text="<br/>Use el siguiente formato: <em>YYYY-MM-DD</em>.")
     
     def __str__(self):
         return '{0} {1}'.format(self.nombre_persona,self.apellidos_persona)
