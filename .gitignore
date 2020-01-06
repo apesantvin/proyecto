@@ -8,4 +8,4 @@ db.sqlite3
 media
 /migrations
 GestionCO2/migrations/
-
+GestionCO2/templates/graficos/

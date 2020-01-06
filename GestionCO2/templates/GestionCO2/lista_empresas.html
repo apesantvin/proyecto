@@ -4,6 +4,10 @@
     <div class="Titulo_pagina">
         <h1>Empresas registradas</h1>
         <br />
+            <div class="ayuda">
+                <p>(Clickee en la letra para ir al listado de empresas cuya inicial sea esa letra)</p>
+            </div>
+        <br />
         {% for indice in indexado%}
             <a href="#{{indice}}">{{indice}}</a>
         {% empty %}
@@ -32,7 +36,7 @@
                     </table>
                 </div>
             {% empty %}
-                <p>No hay ninguna empresa todavia, dale al mas de arriba a la derecha para agregar uno. (Esto solo se le permite a los usuarios registrados):(</p>
+                <p>No se encuentra ninguna empresa registrada. Usted puede añadir su empresa pulsando el <span class="glyphicon glyphicon-plus"></span></p>
             {% endfor %}
         </div>
     </div>

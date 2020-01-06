@@ -16,11 +16,10 @@ def empresa_lista(request):
     datos = Empresa.objects.all().order_by('nombre_empresa')
     if datos: 
         letras=[]
-        letras.append(datos[0].nombre_empresa[0])
         empresa_por_alfabeto=[]
         misma_letra=[]
         for dato in datos:
-            #if dato.permitido_publicar:
+            if dato.permitido_publicar:
                 if dato.nombre_empresa[0] not in letras:
                     letras.append(dato.nombre_empresa[0])
                     empresa_por_alfabeto.append(misma_letra)
@@ -30,10 +29,14 @@ def empresa_lista(request):
                     misma_letra.append(dato)
         empresa_por_alfabeto.append(misma_letra)
         letras_palabras = []
+        j=0
         for i in range(len(letras)):
             letras_palabras.append([])
             letras_palabras[i].append(letras[i])
-            letras_palabras[i].append(empresa_por_alfabeto[i])
+            if len(empresa_por_alfabeto[j]) == 0:
+                j=j+1
+            letras_palabras[i].append(empresa_por_alfabeto[j])
+            j=j+1
         return render(request, 'GestionCO2/lista_empresas.html', {'datos':letras_palabras,'indexado':letras})
     else:
         return render(request, 'GestionCO2/lista_empresas.html', {'datos':[],'indexado':[]})
@@ -70,6 +73,11 @@ def empresa_detalles(request,pk):
 
 @login_required
 def empresa_configuracion(request, pk):
+    tipo_consumo=['1','2','3','4']
+    tipo_consumo_ve=['1','2','3']
+    tama_vehiculo=['1','2','3']
+    tipo_transporte=['1','2','3','4']
+    medios=['1','2','3']
     e = get_object_or_404(Empresa, pk=pk)
     if request.method=='POST':
         form = leercsv(request.POST,request.FILES)
@@ -90,47 +98,106 @@ def empresa_configuracion(request, pk):
                         if row[0] == 'Personal':
                             Personal.objects.get_or_create(empresa=e, apellidos_persona=row[1], fecha_contratacion=row[2], nombre_persona=row[3])
                         elif row[0] == 'Vehiculo':
-                            Vehiculo.objects.get_or_create(empresa=e, fecha_compra=row[1], matricula=row[2], tamano=row[3], tipo_tranporte=row[4])
+                            if row[3] in tama_vehiculo:
+                                if row[4] in tipo_transporte:
+                                    Vehiculo.objects.get_or_create(empresa=e, fecha_compra=row[1], matricula=row[2], tamano=row[3], tipo_tranporte=row[4])
+                                else:
+                                    messages.error(request, f'El tipo de transporte de la línea {line_count + 1} no existe en nuestra base de datos')
+                                    return redirect('empresa_configuracion', pk=e.pk)
+                            else:
+                                messages.error(request, f'El tamaño del transporte de la línea {line_count + 1} no existe en nuestra base de datos')
+                                return redirect('empresa_configuracion', pk=e.pk)
                         elif row[0] == 'Edificio':
                             Edificio.objects.get_or_create(empresa=e, nombre_edificio=row[1], localizacion=row[2],fecha_adquisicion=row[3])
                         elif row[0] == 'EdificioConsumo':
-                            edif = Edificio.objects.get(empresa=e, nombre_edificio=row[1])
-                            f = row[4].split('-')
-                            if edif.fecha_adquisicion <= date(int(f[0]),int(f[1]),int(f[2])):
-                                EdificioConsumo.objects.get_or_create(edificio=edif, tipo=row[2], cantidad_consumida=row[3], fecha_consumo=row[4])
+                            if row[2] in tipo_consumo:
+                                edificios=Edificio.objects.filter(empresa=e)
+                                nombre_edificios=[]
+                                for edificio in edificios:
+                                    nombre_edificios.append(edificio.nombre_edificio)
+                                if row[1] in nombre_edificios:
+                                    edif = Edificio.objects.get(empresa=e, nombre_edificio=row[1])
+                                    f = row[4].split('-')
+                                    if edif.fecha_adquisicion <= date(int(f[0]),int(f[1]),int(f[2])):
+                                        EdificioConsumo.objects.get_or_create(edificio=edif, tipo=row[2], cantidad_consumida=row[3], fecha_consumo=row[4])
+                                    else:
+                                        messages.error(request, f'Las fechas introducidas en la linea {line_count + 1} no son correctas')
+                                        return redirect('empresa_configuracion', pk=e.pk)
+                                else:
+                                    messages.error(request, f'El edificio de la línea {line_count + 1} no existe en la empresa')
+                                    return redirect('empresa_configuracion', pk=e.pk)
                             else:
-                                messages.error(request, f'Las fechas introducidas en la linea {line_count + 1} no son correctas')
+                                messages.error(request, f'Lo que usted ha consumido en la linea {line_count + 1} no existe en nuestra base de datos')
                                 return redirect('empresa_configuracion', pk=e.pk)
                         elif row[0] == 'Generador':
-                            edif = Edificio.objects.get(empresa=e, nombre_edificio=row[1])
-                            f = row[3].split('-')
-                            if edif.fecha_adquisicion <= date(int(f[0]),int(f[1]),int(f[2])):
-                                EdificioConsumo.objects.get_or_create(edificio=edif, cantidad_generada=row[2], fecha_generacion=row[3], medios=row[4])
+                            if row[4] in medios:
+                                edificios=Edificio.objects.filter(empresa=e)
+                                nombre_edificios=[]
+                                for edificio in edificios:
+                                    nombre_edificios.append(edificio.nombre_edificio)
+                                if row[1] in nombre_edificios:
+                                    edif = Edificio.objects.get(empresa=e, nombre_edificio=row[1])
+                                    f = row[3].split('-')
+                                    if edif.fecha_adquisicion <= date(int(f[0]),int(f[1]),int(f[2])):
+                                        EdificioConsumo.objects.get_or_create(edificio=edif, cantidad_generada=row[2], fecha_generacion=row[3], medios=row[4])
+                                    else:
+                                        messages.error(request, f'Las fechas introducidas en la linea {line_count + 1} no son correctas')
+                                        return redirect('empresa_configuracion', pk=e.pk)
+                                else:
+                                    messages.error(request, f'El edificio de la línea {line_count + 1} no existe en la empresa')
+                                    return redirect('empresa_configuracion', pk=e.pk)
                             else:
-                                messages.error(request, f'Las fechas introducidas en la linea {line_count + 1} no son correctas')
-                                return redirect('empresa_configuracion', pk=e.pk)
+                                messages.error(request, f'El medio mediante el que usted ha generado en la linea {line_count + 1} no existe en nuestra base de datos')
                         elif row[0] == 'VehiculoConsumo':
-                            veh = Vehiculo.objects.get(empresa=e, matricula=row[3])
-                            pers = Personal.objects.get(empresa=e, apellidos_persona=row[1], nombre_persona=row[2])
-                            f = row[5].split('-')
-                            if veh.fecha_compra <= date(int(f[0]),int(f[1]),int(f[2])) and pers.fecha_contratacion <= date(int(f[0]),int(f[1]),int(f[2])):
-                                VehiculoConsumo.objects.get_or_create(personal=pers, vehiculo=veh, cantidad_consumida=row[4], fecha_consumo=row[5], tipo=row[6])
+                            if row[6] in tipo_consumo_ve:
+                                vehiculos=Vehiculo.objects.filter(empresa=e)
+                                personales=Personal.objects.filter(empresa=e)
+                                nombre_personales=[]
+                                matriculas=[]
+                                for personal in personales:
+                                    nombre_personales.append(str(personal.nombre_persona)+str(' ')+str(personal.apellidos_persona))
+                                for vehiculo in vehiculos:
+                                    matriculas.append(vehiculo.matricula)
+                                persona=str(row[2])+str(' ')+str(row[1])
+                                if (row[3] in matriculas) and (persona in nombre_personales):
+                                    veh = Vehiculo.objects.get(empresa=e, matricula=row[3])
+                                    pers = Personal.objects.get(empresa=e, apellidos_persona=row[1], nombre_persona=row[2])
+                                    f = row[5].split('-')
+                                    if veh.fecha_compra <= date(int(f[0]),int(f[1]),int(f[2])) and pers.fecha_contratacion <= date(int(f[0]),int(f[1]),int(f[2])):
+                                        VehiculoConsumo.objects.get_or_create(personal=pers, vehiculo=veh, cantidad_consumida=row[4], fecha_consumo=row[5], tipo=row[6])
+                                    else:
+                                        messages.error(request, f'Las fechas introducidas en la linea {line_count + 1} no son correctas')
+                                        return redirect('empresa_configuracion', pk=e.pk)
+                                else:
+                                    messages.error(request, f'La persona o el vehiculo de la línea {line_count + 1} no existe en la empresa')
+                                    return redirect('empresa_configuracion', pk=e.pk)
                             else:
-                                messages.error(request, f'Las fechas introducidas en la linea {line_count + 1} no son correctas')
-                                return redirect('empresa_configuracion', pk=e.pk)
+                                messages.error(request, f'El tipo de consumo que  usted ha generado en la linea {line_count + 1} no existe en nuestra base de datos')
                         elif row[0] == 'Viaje':
-                            pers = Personal.objects.get(empresa=e, apellidos_persona=row[1], nombre_persona=row[2])
-                            f = row[3].split('-')
-                            if pers.fecha_contratacion <= date(int(f[0]),int(f[1]),int(f[2])):
-                                Viaje.objects.get_or_create(fecha_viaje=row[3], personal=pers, distancia=row[4], transporte=row[5], noches_hotel=row[6])
+                            if row[6] in tipo_transporte:
+                                personales=Personal.objects.filter(empresa=e)
+                                nombre_personales=[]
+                                for personal in personales:
+                                    nombre_personales.append(str(personal.nombre_persona)+str(' ')+str(personal.apellidos_persona))
+                                persona=str(row[2])+str(' ')+str(row[1])
+                                if (persona in nombre_personales):
+                                    pers = Personal.objects.get(empresa=e, apellidos_persona=row[1], nombre_persona=row[2])
+                                    f = row[3].split('-')
+                                    if pers.fecha_contratacion <= date(int(f[0]),int(f[1]),int(f[2])):
+                                        Viaje.objects.get_or_create(fecha_viaje=row[3], personal=pers, distancia=row[4], transporte=row[5], noches_hotel=row[6])
+                                    else:
+                                        messages.error(request, f'Las fechas introducidas en la linea {line_count + 1} no son correctas')
+                                        return redirect('empresa_configuracion', pk=e.pk)
+                                else:
+                                    messages.error(request, f'La persona de la línea {line_count + 1} no existe en la empresa')
+                                    return redirect('empresa_configuracion', pk=e.pk)
                             else:
-                                messages.error(request, f'Las fechas introducidas en la linea {line_count + 1} no son correctas')
-                                return redirect('empresa_configuracion', pk=e.pk)
+                                messages.error(request, f'El transporte que usted ha utilizado en la linea {line_count + 1} no existe en nuestra base de datos')
                         else:
                             messages.error(request, f'No se reconoce la linea {line_count + 1}')
                         line_count += 1
             messages.success(request, 'Datos del fichero añadidos con éxito')
-            return redirect('empresa_detalles', pk=e.pk)
+            return redirect('empresa_configuracion', pk=e.pk)
     else:
         form = leercsv()
     return render(request, 'GestionCO2/empresa_configuracion.html', {'empresa': e,'form': form})
