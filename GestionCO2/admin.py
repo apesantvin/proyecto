@@ -14,4 +14,5 @@ admin.site.register(Respuesta)
 admin.site.register(Experto)
 admin.site.register(CSVs)
 admin.site.register(Factores_conversion)
+admin.site.register(CO2_Empresa_Año)
 # Register your models here.

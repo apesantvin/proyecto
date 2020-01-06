@@ -50,15 +50,15 @@ def empresa_detalles(request,pk):
     else:
         datos=1
     consumos=Factores_conversion.objects.first()
-    co2_anual=calcular_CO2_year(pk, min_year,consumos)
-    co2_edificios=calcular_CO2_edificios(pk, min_year,consumos)
-    co2_vehiculos=calcular_CO2_vehiculos(pk, min_year,consumos)
-    co2_viajes=calcular_CO2_viajes(pk, min_year)
+    co2_anual=CO2_Empresa_Año.objects.filter(empresa=empresa,Graf='1')
+    co2_edificios=CO2_Empresa_Año.objects.filter(empresa=empresa,Graf='2')
+    co2_viajes=CO2_Empresa_Año.objects.filter(empresa=empresa,Graf='3')
+    co2_vehiculos=CO2_Empresa_Año.objects.filter(empresa=empresa,Graf='4')
     fecha1=[]
     cantidad1=[]
     for dato in co2_anual:
-        fecha1.append(dato[0])
-        cantidad1.append(dato[1])
+        fecha1.append(dato.Año)
+        cantidad1.append(float(dato.CO2_generado))
     source = pd.DataFrame({
             'a': fecha1,
             'b': cantidad1
@@ -70,6 +70,46 @@ def empresa_detalles(request,pk):
     )
     grafico.save('GestionCO2/templates/graficos/grafico.html', embed_options={'renderer':'svg'})
     return render(request, 'GestionCO2/empresa_detalles_principales.html', {'empresa': empresa, 'anual':co2_anual, 'edificios':co2_edificios, 'vehiculos':co2_vehiculos, 'viajes':co2_viajes, 'datos':datos})
+
+@login_required
+def actualizar_datos(request,pk):
+    empresa = get_object_or_404(Empresa, pk=pk)
+    min_year=calcular_year_minimo(empresa)
+    if min_year==0:
+        datos=0
+        min_year=timezone.now().year
+    else:
+        datos=1
+    consumos=Factores_conversion.objects.first()
+    co2_anual=calcular_CO2_year(pk, min_year,consumos)
+    co2_edificios=calcular_CO2_edificios(pk, min_year,consumos)
+    co2_vehiculos=calcular_CO2_vehiculos(pk, min_year,consumos)
+    co2_viajes=calcular_CO2_viajes(pk, min_year)
+    TotalAños=CO2_Empresa_Año.objects.filter(empresa=empresa,Graf='1')
+    for dato in TotalAños:
+        dato.delete()
+    for dato in co2_anual:
+        CO2_Empresa_Año.objects.create(empresa=empresa,Año=dato[0],CO2_generado=float(dato[1]),Graf='1')
+        
+    TotalAños=CO2_Empresa_Año.objects.filter(empresa=empresa,Graf='2')
+    for dato in TotalAños:
+        dato.delete()
+    for dato in co2_edificios:
+        CO2_Empresa_Año.objects.create(empresa=empresa,Año=dato[0],CO2_generado=float(dato[1]),Graf='2')
+        
+    TotalAños=CO2_Empresa_Año.objects.filter(empresa=empresa,Graf='3')
+    for dato in TotalAños:
+        dato.delete()
+    for dato in co2_viajes:
+        CO2_Empresa_Año.objects.create(empresa=empresa,Año=dato[0],CO2_generado=float(dato[1]),Graf='3')
+        
+    TotalAños=CO2_Empresa_Año.objects.filter(empresa=empresa,Graf='4')
+    for dato in TotalAños:
+        dato.delete()
+    for dato in co2_vehiculos:
+        CO2_Empresa_Año.objects.create(empresa=empresa,Año=dato[0],CO2_generado=float(dato[1]),Graf='4')
+
+    return redirect('empresa_detalles', pk=empresa.pk)    
 
 @login_required
 def empresa_configuracion(request, pk):

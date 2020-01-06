@@ -29,6 +29,12 @@ FUENTES = (
     ('2', 'Molinos Eólicos'),
     ('3', 'Otros...'),
 )
+POSIBILIDADES = (
+    ('1', 'Total'),
+    ('2', 'Edificios'),
+    ('3', 'Viajes'),
+    ('4', 'Vehiculos'),
+)
 
 # Create your models here.
 class Empresa(models.Model):
@@ -205,3 +211,9 @@ class Factores_conversion(models.Model):
     
     def __str__(self):
         return 'Factores'+str(self.pk)
+    
+class CO2_Empresa_Año(models.Model):
+    empresa = models.ForeignKey('Empresa',on_delete=models.CASCADE)
+    Año=models.CharField('Año',max_length=4)
+    CO2_generado=models.DecimalField(max_digits=10,decimal_places=2)
+    Graf=models.CharField('Tipo de grafico',max_length=50,choices=POSIBILIDADES)
