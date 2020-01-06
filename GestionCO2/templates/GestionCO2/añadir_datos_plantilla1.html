@@ -26,7 +26,6 @@
     <form  role="form" class="formulario_añadir" enctype="multipart/form-data" action="." method="POST"> 
         {% csrf_token %}
         {{ form.as_p }}
-        <p><strong> Formato para añadir la fecha: Año-Mes-Día </strong></p>
         <br/>
         <button type="submit" class="save btn btn-default">Save</button>
     </form>

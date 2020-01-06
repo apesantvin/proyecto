@@ -52,7 +52,7 @@ class Edificio(models.Model):
     empresa = models.ForeignKey('Empresa',on_delete=models.CASCADE)
     nombre_edificio= models.CharField(max_length=30)
     localizacion = models.CharField(max_length=50)
-    fecha_adquisicion = models.DateField('Fecha contratación',blank=True, null=True)
+    fecha_adquisicion = models.DateField('Fecha contratación',blank=True, null=True,help_text="<br/>Use el siguiente formato: <em>YYYY-MM-DD</em>.")
     
     def __str__(self):
         return self.nombre_edificio
@@ -61,7 +61,7 @@ class Generador(models.Model):
     edificio = models.ForeignKey('Edificio',on_delete=models.CASCADE)
     medios = models.CharField('Tipo de Generador',max_length=50,choices=FUENTES)
     cantidad_generada = models.IntegerField(help_text='en KWH')
-    fecha_generacion= models.DateField('Fecha de la generación')
+    fecha_generacion= models.DateField('Fecha de la generación',help_text="<br/>Use el siguiente formato: <em>YYYY-MM-DD</em>.")
     
     def __str__(self):
         return str(self.id)
@@ -80,9 +80,9 @@ class Vehiculo(models.Model):
     )
     empresa = models.ForeignKey('Empresa',on_delete=models.CASCADE)
     tipo_tranporte=models.CharField('Vehiculo',max_length=50,choices=TRANSPORTES)
-    matricula = models.CharField(max_length=8)
+    matricula = models.CharField(max_length=8,help_text="<br/>Use 8 digitos")
     tamano = models.CharField('Tamaño',max_length=50,choices=TAMANOS)
-    fecha_compra = models.DateField('Fecha compra')
+    fecha_compra = models.DateField('Fecha compra',help_text="<br/>Use el siguiente formato: <em>YYYY-MM-DD</em>.")
     
     def __str__(self):
         return self.matricula
@@ -91,7 +91,7 @@ class Personal(models.Model):
     empresa = models.ForeignKey('Empresa',on_delete=models.CASCADE)
     nombre_persona = models.CharField('Nombre',max_length=25)
     apellidos_persona= models.CharField('Apellidos',max_length=30)
-    fecha_contratacion = models.DateField('Fecha contratacion')
+    fecha_contratacion = models.DateField('Fecha contratacion',blank=True, null=True,help_text="<br/>Use el siguiente formato: <em>YYYY-MM-DD</em>.")
     
     def __str__(self):
         return '{0} {1}'.format(self.nombre_persona,self.apellidos_persona)
@@ -99,7 +99,7 @@ class Personal(models.Model):
 class Viaje(models.Model):
     fecha_viaje = models.DateField(default=timezone.now)
     personal = models.ManyToManyField('Personal')
-    distancia = models.DecimalField(max_digits=5, decimal_places=2,default=0)
+    distancia = models.DecimalField(max_digits=5, decimal_places=2,default=0,help_text="en Km")
     transporte = models.CharField(max_length=50,choices=TRANSPORTES2)
     noches_hotel = models.IntegerField('Noches en hotel',default=0)
     
@@ -122,8 +122,8 @@ class Viaje(models.Model):
         return '{0}'.format(self.fecha_viaje)
     
 class Consumo(models.Model):
-    cantidad_consumida = models.DecimalField(max_digits=5, decimal_places=2)
-    fecha_consumo= models.DateField('Fecha del consumo')
+    cantidad_consumida = models.DecimalField(max_digits=5, decimal_places=2,help_text="<br/>Las unidades son: <br/>KWH=Electricidad, Gas natural <br/>Litros= Agua, Aceite, GAsolina, DIesel <br/>Kg=Propano")
+    fecha_consumo= models.DateField('Fecha del consumo',help_text="<br/>Use el siguiente formato: <em>YYYY-MM-DD</em>.")
     
 class EdificioConsumo(Consumo):
     edificio = models.ForeignKey('Edificio',on_delete=models.CASCADE)
