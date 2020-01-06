@@ -98,7 +98,7 @@ class Personal(models.Model):
 
 class Viaje(models.Model):
     fecha_viaje = models.DateField(default=timezone.now)
-    personal = models.ManyToManyField('Personal')
+    personal = models.ManyToManyField('Personal',help_text="<br/>Mantenga presionado ctrl para seleccionar más de una persona")
     distancia = models.DecimalField(max_digits=5, decimal_places=2,default=0,help_text="en Km")
     transporte = models.CharField(max_length=50,choices=TRANSPORTES2)
     noches_hotel = models.IntegerField('Noches en hotel',default=0)
