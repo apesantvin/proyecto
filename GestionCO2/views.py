@@ -68,7 +68,7 @@ def empresa_detalles(request,pk):
         x='a',
         y='b'
     )
-    grafico.save('GestionCO2/templates/graficos/grafico.html', embed_options={'renderer':'svg'})
+    grafico.save('GestionCO2/templates/graficos/grafico.html')
     return render(request, 'GestionCO2/empresa_detalles_principales.html', {'empresa': empresa, 'anual':co2_anual, 'edificios':co2_edificios, 'vehiculos':co2_vehiculos, 'viajes':co2_viajes, 'datos':datos})
 
 @login_required

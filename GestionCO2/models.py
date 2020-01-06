@@ -86,7 +86,7 @@ class Vehiculo(models.Model):
     )
     empresa = models.ForeignKey('Empresa',on_delete=models.CASCADE)
     tipo_tranporte=models.CharField('Vehiculo',max_length=50,choices=TRANSPORTES)
-    matricula = models.CharField(max_length=8,help_text="<br/>Use 8 digitos")
+    matricula = models.CharField(max_length=8,help_text="<br/>Use 8 digitos",unique=True)
     tamano = models.CharField('Tamaño',max_length=50,choices=TAMANOS)
     fecha_compra = models.DateField('Fecha compra',help_text="<br/>Use el siguiente formato: <em>YYYY-MM-DD</em>.")
     
