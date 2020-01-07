@@ -26,4 +26,11 @@ Vamos a explicarte cuales son las funcionalidades de nuestra pagina web:
   
   Las empresas también pueden pedir ayuda a los expertos mandandoles un mensaje y pidiendo ver si este ha sido contestado o no y la respuesta.
   
-  Las empresas deciden si quieren que cualquier usuario pueda ver sus datos de consumo al registrar la empresa.
+  Las empresas deciden si quieren que cualquier usuario pueda ver sus datos de consumo al registrar la empresa o más adelante en cualquier punto. Pero una vez publicada no se puede echar a tras.
+  
+  IMPORTANTE:
+    -Nada mas crear la aplicación mediante el admin se tiene que crear la tabla de factores
+    
+    -En pythonanywhere las funcionalidades de introducir mediante csv y actualizar la tabla que almacena los datos de las gráficas no funcionan, saltan errores que trabajando localmente no.
+    
+    
