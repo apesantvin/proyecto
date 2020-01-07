@@ -196,7 +196,7 @@ class CSVs(models.Model):
 class Factores_conversion(models.Model):
     #Kilogramos de CO2 por litro
     Edificio_consumo_Agua = models.DecimalField(max_digits=5, decimal_places=2,default=0.3)
-    Edificio_consumo_Aceite = models.DecimalField(max_digits=5, decimal_places=2,default=0.3)
+    Edificio_consumo_Aceite = models.DecimalField(max_digits=5, decimal_places=2,default=1.3)
     #Kilogramos de CO2 por kWh
     Edificio_consumo_Electricidad = models.DecimalField(max_digits=5, decimal_places=2,default=0.35)
     #Kilogramos de CO2 por Kg de propano
@@ -208,6 +208,8 @@ class Factores_conversion(models.Model):
     #Kilogramos de CO2 por litro de combusible
     Vehiculo_consumo_Gasolina = models.DecimalField(max_digits=5, decimal_places=3,default=2.157)
     Vehiculo_consumo_Diesel = models.DecimalField(max_digits=5, decimal_places=3,default=2.493)
+    #Kilogramos de CO2 por noche de hotel
+    Viaje_consumo_noches = models.DecimalField(max_digits=5, decimal_places=3,default=50)
     
     def __str__(self):
         return 'Factores'+str(self.pk)
