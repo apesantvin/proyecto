@@ -94,36 +94,40 @@ def actualizar_datos(request,pk):
     co2_vehiculos=calcular_consumo_vehiculos(empresa,consumos)
     co2_viajes=calcular_consumo_viajes(empresa,consumos)
     co2_anual=[]
-    for datos in co2_edificios:
-        co2_anual.append(datos)
-    for datos in co2_vehiculos:
-        co2_anual.append(datos)
-    for datos in co2_viajes:
-        co2_anual.append(datos)
-    co2_anual=ordenar_agrupar(co2_anual)
-    TotalAños=CO2_Empresa_Año.objects.filter(empresa=empresa,Graf='1')
-    for dato in TotalAños:
-        dato.delete()
-    for dato in co2_anual:
-        CO2_Empresa_Año.objects.create(empresa=empresa,Año=dato[0],CO2_generado=float(dato[1]),Graf='1')
-        
-    TotalAños=CO2_Empresa_Año.objects.filter(empresa=empresa,Graf='2')
-    for dato in TotalAños:
-        dato.delete()
-    for dato in co2_edificios:
-        CO2_Empresa_Año.objects.create(empresa=empresa,Año=dato[0],CO2_generado=float(dato[1]),Graf='2')
-        
-    TotalAños=CO2_Empresa_Año.objects.filter(empresa=empresa,Graf='3')
-    for dato in TotalAños:
-        dato.delete()
-    for dato in co2_viajes:
-        CO2_Empresa_Año.objects.create(empresa=empresa,Año=dato[0],CO2_generado=float(dato[1]),Graf='3')
-        
-    TotalAños=CO2_Empresa_Año.objects.filter(empresa=empresa,Graf='4')
-    for dato in TotalAños:
-        dato.delete()
-    for dato in co2_vehiculos:
-        CO2_Empresa_Año.objects.create(empresa=empresa,Año=dato[0],CO2_generado=float(dato[1]),Graf='4')
+    if co2_edificios:
+        for datos in co2_edificios:
+            co2_anual.append(datos)
+        TotalAños=CO2_Empresa_Año.objects.filter(empresa=empresa,Graf='2')
+        for dato in TotalAños:
+            dato.delete()
+        for dato in co2_edificios:
+            CO2_Empresa_Año.objects.create(empresa=empresa,Año=dato[0],CO2_generado=float(dato[1]),Graf='2')
+            
+    if co2_vehiculos:
+        for datos in co2_vehiculos:
+            co2_anual.append(datos)
+        TotalAños=CO2_Empresa_Año.objects.filter(empresa=empresa,Graf='4')
+        for dato in TotalAños:
+            dato.delete()
+        for dato in co2_vehiculos:
+            CO2_Empresa_Año.objects.create(empresa=empresa,Año=dato[0],CO2_generado=float(dato[1]),Graf='4')
+            
+    if co2_viajes:
+        for datos in co2_viajes:
+            co2_anual.append(datos)
+        TotalAños=CO2_Empresa_Año.objects.filter(empresa=empresa,Graf='3')
+        for dato in TotalAños:
+            dato.delete()
+        for dato in co2_viajes:
+            CO2_Empresa_Año.objects.create(empresa=empresa,Año=dato[0],CO2_generado=float(dato[1]),Graf='3')
+            
+    if co2_anual:
+        co2_anual=ordenar_agrupar(co2_anual)
+        TotalAños=CO2_Empresa_Año.objects.filter(empresa=empresa,Graf='1')
+        for dato in TotalAños:
+            dato.delete()
+        for dato in co2_anual:
+            CO2_Empresa_Año.objects.create(empresa=empresa,Año=dato[0],CO2_generado=float(dato[1]),Graf='1')
 
     return redirect('empresa_detalles', pk=empresa.pk)
 
