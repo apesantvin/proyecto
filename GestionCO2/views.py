@@ -54,21 +54,26 @@ def empresa_detalles(request,pk):
     co2_edificios=CO2_Empresa_Año.objects.filter(empresa=empresa,Graf='2')
     co2_viajes=CO2_Empresa_Año.objects.filter(empresa=empresa,Graf='3')
     co2_vehiculos=CO2_Empresa_Año.objects.filter(empresa=empresa,Graf='4')
-    fecha1=[]
-    cantidad1=[]
-    for dato in co2_anual:
-        fecha1.append(dato.Año)
-        cantidad1.append(float(dato.CO2_generado))
-    source = pd.DataFrame({
-            'a': fecha1,
-            'b': cantidad1
-            })
+    def crear_gráficas(lista,numero):
+        fecha1=[]
+        cantidad1=[]
+        for dato in lista:
+            fecha1.append(dato.Año)
+            cantidad1.append(float(dato.CO2_generado))
+        source = pd.DataFrame({
+                'a': fecha1,
+                'b': cantidad1
+                })
 
-    grafico=alt.Chart(source).mark_bar().encode(
-        x='a',
-        y='b'
-    )
-    grafico.save('GestionCO2/templates/graficos/grafico.html')
+        grafico=alt.Chart(source).mark_bar().encode(
+            x='a',
+            y='b'
+        )
+        grafico.save('GestionCO2/templates/graficos/grafico'+numero+'.html')
+    crear_gráficas(co2_anual,'1')
+    crear_gráficas(co2_edificios,'2')
+    crear_gráficas(co2_viajes,'3')
+    crear_gráficas(co2_vehiculos,'4')
     return render(request, 'GestionCO2/empresa_detalles_principales.html', {'empresa': empresa, 'anual':co2_anual, 'edificios':co2_edificios, 'vehiculos':co2_vehiculos, 'viajes':co2_viajes, 'datos':datos})
 
 @login_required
@@ -179,7 +184,7 @@ def empresa_configuracion(request, pk):
                                     edif = Edificio.objects.get(empresa=e, nombre_edificio=row[1])
                                     f = row[3].split('-')
                                     if edif.fecha_adquisicion <= date(int(f[0]),int(f[1]),int(f[2])):
-                                        EdificioConsumo.objects.get_or_create(edificio=edif, cantidad_generada=row[2], fecha_generacion=row[3], medios=row[4])
+                                        Generador.objects.get_or_create(edificio=edif, cantidad_generada=row[2], fecha_generacion=row[3], medios=row[4])
                                     else:
                                         messages.error(request, f'Las fechas introducidas en la linea {line_count + 1} no son correctas')
                                         return redirect('empresa_configuracion', pk=e.pk)
@@ -224,7 +229,9 @@ def empresa_configuracion(request, pk):
                                     pers = Personal.objects.get(empresa=e, apellidos_persona=row[1], nombre_persona=row[2])
                                     f = row[3].split('-')
                                     if pers.fecha_contratacion <= date(int(f[0]),int(f[1]),int(f[2])):
-                                        Viaje.objects.get_or_create(fecha_viaje=row[3], personal=pers, distancia=row[4], transporte=row[5], noches_hotel=row[6])
+                                        vi=Viaje.objects.get_or_create(fecha_viaje=row[3],distancia=row[4], transporte=row[5],noches_hotel=row[6])
+                                        vi[0].personal.add(pers)
+                                        vi[0].save()
                                     else:
                                         messages.error(request, f'Las fechas introducidas en la linea {line_count + 1} no son correctas')
                                         return redirect('empresa_configuracion', pk=e.pk)
