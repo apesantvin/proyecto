@@ -21,7 +21,37 @@
                 </ul>
             {% endif %}
         </div>
-        <form  role="form2" class="formulario_csv" enctype="multipart/form-data" action="." method="POST"> 
+        <form  role="form2" class="formulario_csv" enctype="multipart/form-data" action="." method="POST">
+            <nav id="informacion">
+                    <ul>
+                        <li><span class="glyphicon glyphicon-info-sign"></span>
+                            <ul>
+                            <li><div>
+                                El formato debe ser:<br/>
+                                     &nbsp;&nbsp;&nbsp;&nbsp;En los ipos solo se acepta el número<br/>
+                                     &nbsp;&nbsp;&nbsp;&nbsp;**El formato de las fechas es (YY-MM-DD)<br/>
+                                     &nbsp;&nbsp;&nbsp;&nbsp;-Primera linea: Nombre de la empresa<br/>
+                                     &nbsp;&nbsp;&nbsp;&nbsp;-Demas líneas:<br/>
+                                     &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;Personal;Apellidos;fecha de contratación;Nombre<br/>
+                                     &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;Vehiculo;Fecha_compra;Matricula;tamaño;tipo de transporte<br/>
+                                     &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tamaño= {1:Pequeño, 2:Mediano, 3:Grande}<br/>
+                                     &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tipo de transporte= {1:Coche, 2:Moto, 3:Autobus, 4:Camion}<br/>
+                                     &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;Edificio:Nombre del edificio;Localización;fecha de adquisición<br/>
+                                     &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;Generador;Edificio;cantidad generada;fecha generacion;medio generacion<br/>
+                                     &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;medio_generacion = {1:Paneles Solares, 2:Molinos Eólicos, 3:Otros}<br/>
+                                     &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; VehiculoConsumo;Apellidos;Nombre;Matricula;Cantidad consumida;fecha consumo;tipo de consumo<br/>
+                                     &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tipo de consumo= {1:Electricidad, 2:Gasolina, 3:Diesel}<br/>
+                                     &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;Viaje;Apellidos;Nombre;Fecha viaje;distancia;tipo de transporte_v;noche de hotel<br/>
+                                     &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**Para añadir más de un personal a un viaje, repite la misma linea cambiando solo los apellidos y el nombre del personal<br/>
+                                     &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tipo de transporte_v= {1:Coche, 2:Avión, 3:Autobus, 4:Tren}<br/>
+                                     &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;EdificioConsumo;nombre edficio;tipo consumo;cantidad_consumida;fecha_consumo<br/>
+                                     &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tipo consumo = {1:Agua, 2:Electricidad, 3:Aceite, 4:Propano, 5:Gas_Natural}<br/>
+                                </div>
+                            </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </nav>
             {% csrf_token %}
             {{ form.as_p }}
             <button type="submit" class="save btn btn-default">Save</button>
