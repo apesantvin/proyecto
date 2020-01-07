@@ -14,9 +14,9 @@ Vamos a explicarte cuales son las funcionalidades de nuestra pagina web:
   
       - Los administradores: que puden dar permisos de expertos a aquellas personas que lo pidan
       
-      - Expertos: son personas expertas en la generacion del CO2 que pueden ayudar a las empresas a reducirlo. Para ser experto tiene que pedirle al administrador.
+      - Expertos: son personas expertas en la generacion del CO2 que pueden ayudar a las empresas a reducirlo. Para ser experto tienen que pedirle al administrador.
       
-      - Usuarios de empresa que crean las empresas y añaden los consumos. Estos usuarios son accesibles por los emprleados de la empresa para que pueden añadir los consumode pertinentes. 
+      - Usuarios de empresa que crean las empresas y añaden los consumos. Estos usuarios son accesibles por los empleados de la empresa para que pueden añadir los consumode pertinentes. 
       
   La pestaña de experto es la maleta que aparece a la derecha de todas las pantallas. Según tu tipo de usuario podrás ver una cosa u otra.
   
@@ -24,6 +24,6 @@ Vamos a explicarte cuales son las funcionalidades de nuestra pagina web:
   
   En cuanto a las empresas, estas puedes añadir datos manualmente a través de formularios, o a traves de un CSV. En la pagina web especifica cual es el formato de inserción de datos.
   
-  Las empresas también pueden pedir ayuda a los expertos mandandoles un mensaje y pudiendo ver si este ha sido contestado o no y la respuesta.
+  Las empresas también pueden pedir ayuda a los expertos mandandoles un mensaje y pidiendo ver si este ha sido contestado o no y la respuesta.
   
   Las empresas deciden si quieren que cualquier usuario pueda ver sus datos de consumo al registrar la empresa.
