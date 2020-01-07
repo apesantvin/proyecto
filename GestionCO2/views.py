@@ -19,7 +19,7 @@ def empresa_lista(request):
         empresa_por_alfabeto=[]
         misma_letra=[]
         for dato in datos:
-            if dato.permitido_publicar:
+            if dato.permitido_publicar or dato.usuario==request.user:
                 if dato.nombre_empresa[0] not in letras:
                     letras.append(dato.nombre_empresa[0])
                     empresa_por_alfabeto.append(misma_letra)
@@ -37,9 +37,12 @@ def empresa_lista(request):
                 j=j+1
             letras_palabras[i].append(empresa_por_alfabeto[j])
             j=j+1
-        return render(request, 'GestionCO2/lista_empresas.html', {'datos':letras_palabras,'indexado':letras})
+        lista_tus_empresas=[]
+        if request.user.is_authenticated:
+            lista_tus_empresas=Empresa.objects.filter(usuario=request.user)
+        return render(request, 'GestionCO2/lista_empresas.html', {'datos':letras_palabras,'indexado':letras, 'lista_tus_empresas':lista_tus_empresas})
     else:
-        return render(request, 'GestionCO2/lista_empresas.html', {'datos':[],'indexado':[]})
+        return render(request, 'GestionCO2/lista_empresas.html', {'datos':[],'indexado':[],'lista_tus_empresas':[]})
 
 def empresa_detalles(request,pk):
     empresa = get_object_or_404(Empresa, pk=pk)
@@ -77,6 +80,11 @@ def empresa_detalles(request,pk):
 def mostrar_grafico (request, Gpk):
     return render(request, 'graficos/grafico'+str(Gpk)+'.html')
 
+@login_required
+def publicar_empresa (request,pk):
+    empresa = get_object_or_404(Empresa, pk=pk)
+    empresa.publicar()
+    return redirect('empresa_detalles', pk=empresa.pk)
 
 @login_required
 def actualizar_datos(request,pk):
@@ -117,8 +125,7 @@ def actualizar_datos(request,pk):
     for dato in co2_vehiculos:
         CO2_Empresa_Año.objects.create(empresa=empresa,Año=dato[0],CO2_generado=float(dato[1]),Graf='4')
 
-    #return redirect('empresa_detalles', pk=empresa.pk)    
-    return render(request, 'GestionCO2/empresa_detalles_principales.html', {'empresa': empresa,'anual':co2_anual, 'edificios':co2_edificios, 'vehiculos':co2_vehiculos, 'viajes':co2_viajes, 'datos':1})
+    return redirect('empresa_detalles', pk=empresa.pk)
 
 @login_required
 def empresa_configuracion(request, pk):
@@ -141,7 +148,7 @@ def empresa_configuracion(request, pk):
                     if line_count == 0:
                         if (e.nombre_empresa != row[0]):
                             messages.error(request, f'El nombre de la empresa en el csv ({row[0]}) no coincide')
-                            return redirect('empresa_configuracion', pk=e.pk)
+                            return render(request, 'GestionCO2/empresa_configuracion.html', {'empresa': e,'form': form})
                         line_count += 1
                     else:
                         if row[0] == 'Personal':
@@ -152,10 +159,10 @@ def empresa_configuracion(request, pk):
                                     Vehiculo.objects.get_or_create(empresa=e, fecha_compra=row[1], matricula=row[2], tamano=row[3], tipo_tranporte=row[4])
                                 else:
                                     messages.error(request, f'El tipo de transporte de la línea {line_count + 1} no existe en nuestra base de datos')
-                                    return redirect('empresa_configuracion', pk=e.pk)
+                                    return render(request, 'GestionCO2/empresa_configuracion.html', {'empresa': e,'form': form})
                             else:
                                 messages.error(request, f'El tamaño del transporte de la línea {line_count + 1} no existe en nuestra base de datos')
-                                return redirect('empresa_configuracion', pk=e.pk)
+                                return render(request, 'GestionCO2/empresa_configuracion.html', {'empresa': e,'form': form})
                         elif row[0] == 'Edificio':
                             Edificio.objects.get_or_create(empresa=e, nombre_edificio=row[1], localizacion=row[2],fecha_adquisicion=row[3])
                         elif row[0] == 'EdificioConsumo':
@@ -171,13 +178,13 @@ def empresa_configuracion(request, pk):
                                         EdificioConsumo.objects.get_or_create(edificio=edif, tipo=row[2], cantidad_consumida=row[3], fecha_consumo=row[4])
                                     else:
                                         messages.error(request, f'Las fechas introducidas en la linea {line_count + 1} no son correctas')
-                                        return redirect('empresa_configuracion', pk=e.pk)
+                                        return render(request, 'GestionCO2/empresa_configuracion.html', {'empresa': e,'form': form})
                                 else:
                                     messages.error(request, f'El edificio de la línea {line_count + 1} no existe en la empresa')
-                                    return redirect('empresa_configuracion', pk=e.pk)
+                                    return render(request, 'GestionCO2/empresa_configuracion.html', {'empresa': e,'form': form})
                             else:
                                 messages.error(request, f'Lo que usted ha consumido en la linea {line_count + 1} no existe en nuestra base de datos')
-                                return redirect('empresa_configuracion', pk=e.pk)
+                                return render(request, 'GestionCO2/empresa_configuracion.html', {'empresa': e,'form': form})
                         elif row[0] == 'Generador':
                             if row[4] in medios:
                                 edificios=Edificio.objects.filter(empresa=e)
@@ -191,12 +198,13 @@ def empresa_configuracion(request, pk):
                                         Generador.objects.get_or_create(edificio=edif, cantidad_generada=row[2], fecha_generacion=row[3], medios=row[4])
                                     else:
                                         messages.error(request, f'Las fechas introducidas en la linea {line_count + 1} no son correctas')
-                                        return redirect('empresa_configuracion', pk=e.pk)
+                                        return render(request, 'GestionCO2/empresa_configuracion.html', {'empresa': e,'form': form})
                                 else:
                                     messages.error(request, f'El edificio de la línea {line_count + 1} no existe en la empresa')
-                                    return redirect('empresa_configuracion', pk=e.pk)
+                                    return render(request, 'GestionCO2/empresa_configuracion.html', {'empresa': e,'form': form})
                             else:
                                 messages.error(request, f'El medio mediante el que usted ha generado en la linea {line_count + 1} no existe en nuestra base de datos')
+                                return render(request, 'GestionCO2/empresa_configuracion.html', {'empresa': e,'form': form})
                         elif row[0] == 'VehiculoConsumo':
                             if row[6] in tipo_consumo_ve:
                                 vehiculos=Vehiculo.objects.filter(empresa=e)
@@ -216,12 +224,13 @@ def empresa_configuracion(request, pk):
                                         VehiculoConsumo.objects.get_or_create(personal=pers, vehiculo=veh, cantidad_consumida=row[4], fecha_consumo=row[5], tipo=row[6])
                                     else:
                                         messages.error(request, f'Las fechas introducidas en la linea {line_count + 1} no son correctas')
-                                        return redirect('empresa_configuracion', pk=e.pk)
+                                        return render(request, 'GestionCO2/empresa_configuracion.html', {'empresa': e,'form': form})
                                 else:
                                     messages.error(request, f'La persona o el vehiculo de la línea {line_count + 1} no existe en la empresa')
-                                    return redirect('empresa_configuracion', pk=e.pk)
+                                    return render(request, 'GestionCO2/empresa_configuracion.html', {'empresa': e,'form': form})
                             else:
                                 messages.error(request, f'El tipo de consumo que  usted ha generado en la linea {line_count + 1} no existe en nuestra base de datos')
+                                return render(request, 'GestionCO2/empresa_configuracion.html', {'empresa': e,'form': form})
                         elif row[0] == 'Viaje':
                             if row[5] in tipo_transporte:
                                 personales=Personal.objects.filter(empresa=e)
@@ -238,17 +247,19 @@ def empresa_configuracion(request, pk):
                                         vi[0].save()
                                     else:
                                         messages.error(request, f'Las fechas introducidas en la linea {line_count + 1} no son correctas')
-                                        return redirect('empresa_configuracion', pk=e.pk)
+                                        return render(request, 'GestionCO2/empresa_configuracion.html', {'empresa': e,'form': form})
                                 else:
                                     messages.error(request, f'La persona de la línea {line_count + 1} no existe en la empresa')
-                                    return redirect('empresa_configuracion', pk=e.pk)
+                                    return render(request, 'GestionCO2/empresa_configuracion.html', {'empresa': e,'form': form})
                             else:
                                 messages.error(request, f'El transporte que usted ha utilizado en la linea {line_count + 1} no existe en nuestra base de datos')
+                                return render(request, 'GestionCO2/empresa_configuracion.html', {'empresa': e,'form': form})
                         else:
                             messages.error(request, f'No se reconoce la linea {line_count + 1}')
+                            return render(request, 'GestionCO2/empresa_configuracion.html', {'empresa': e,'form': form})
                         line_count += 1
             messages.success(request, 'Datos del fichero añadidos con éxito')
-            return redirect('empresa_configuracion', pk=e.pk)
+            return render(request, 'GestionCO2/empresa_configuracion.html', {'empresa': e,'form': form})
     else:
         form = leercsv()
     return render(request, 'GestionCO2/empresa_configuracion.html', {'empresa': e,'form': form})

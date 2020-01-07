@@ -4,6 +4,11 @@
     <div class="config">
         {% if user == empresa.usuario %}
             <a href="{% url 'empresa_configuracion' pk=empresa.pk %}" class="top-menu"><span class="glyphicon glyphicon-cog"></span></a>
+            {% if empresa.permitido_publicar %}
+                <span class="glyphicon glyphicon-eye-open "></span>
+            {% else %}
+                <span class="glyphicon glyphicon-eye-close "></span>
+            {% endif %}
         {% endif %}
     </div>
     <div class="EmpresaNombre">

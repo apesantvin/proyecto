@@ -3,8 +3,25 @@
 {% block content %}
     <div class="Titulo_pagina">
         <h1>Empresas registradas</h1>
+        <div class="menu">
+            {% if user.is_authenticated %}
+                <nav id="menu">
+                    <ul>
+                        <li><a href="#">Sus empresas</a>
+                            <ul>
+                                {% for empresa in lista_tus_empresas %}
+                                    <li><a href="{% url 'empresa_detalles' pk=empresa.pk %}">{{empresa.nombre_empresa}}</a></li>
+                                {% endfor %}
+                                <li><a href="{% url 'añadir_empresa' %}"><span class="glyphicon glyphicon-plus"></span></a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </nav>
+            {% endif %}
+        </div>
         <br />
             <div class="ayuda">
+            </br></br>
                 <p>(Clickee en la letra para ir al listado de empresas cuya inicial sea esa letra)</p>
             </div>
         <br />
@@ -18,7 +35,7 @@
     <div style="overflow-x:auto;">
         <div style="overflow-x:auto;">
             {% for letra,dato in datos %}
-                <A name="{{letra}}">{{letra}}</a>
+                <A name="{{letra}}"></a>
                 <div id="div1">
                     <table class="table table-condensed" style="border-spacing: 5px;">
                     {% for tabla in dato %}
