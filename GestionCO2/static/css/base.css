@@ -138,7 +138,9 @@ form {
     font-size: 15;
     text-align: center;
 }
-
+.graficos a{
+    color:#000000;
+}
 .user-config{
     width: 30%;
     float: left;

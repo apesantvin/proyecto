@@ -63,12 +63,20 @@ def empresa_detalles(request,pk):
             x='a',
             y='b'
         )
-        grafico.save('GestionCO2/templates/graficos/grafico'+numero+'.html')
-    crear_gráficas(co2_anual,'1')
-    crear_gráficas(co2_edificios,'2')
-    crear_gráficas(co2_viajes,'3')
-    crear_gráficas(co2_vehiculos,'4')
-    return render(request, 'GestionCO2/empresa_detalles_principales.html', {'empresa': empresa, 'edificios':co2_edificios, 'vehiculos':co2_vehiculos, 'viajes':co2_viajes, 'datos':1})
+        grafico.save('GestionCO2/templates/graficos/grafico'+str(numero)+'.html')
+    if co2_anual.exists() or co2_edificios.exists() or co2_viajes.exists() or co2_vehiculos.exists():
+        datos=1
+        crear_gráficas(co2_anual,'1')
+        crear_gráficas(co2_edificios,'2')
+        crear_gráficas(co2_viajes,'3')
+        crear_gráficas(co2_vehiculos,'4')
+    else:
+        datos=0
+    return render(request, 'GestionCO2/empresa_detalles_principales.html', {'empresa': empresa, 'edificios':co2_edificios, 'vehiculos':co2_vehiculos, 'viajes':co2_viajes, 'datos':datos})
+
+def mostrar_grafico (request, Gpk):
+    return render(request, 'graficos/grafico'+str(Gpk)+'.html')
+
 
 @login_required
 def actualizar_datos(request,pk):
@@ -586,7 +594,10 @@ def calcular_consumo_Edificio(empresa,factores):
                 factor=float(factores.Edificio_consumo_GasNatural)
             matriz[i].append(float(consumo.cantidad_consumida)*factor)
             i=i+1
-    nuevamatriz=ordenar_agrupar(matriz)
+    if matriz != []:
+        nuevamatriz=ordenar_agrupar(matriz)
+    else:
+        nuevamatriz=matriz
     return nuevamatriz
 
 def calcular_consumo_vehiculos(empresa,factores):
@@ -607,7 +618,10 @@ def calcular_consumo_vehiculos(empresa,factores):
                 factor=float(factores.Vehiculo_consumo_Diesel)
             matriz[i].append(float(consumo.cantidad_consumida)*factor)
             i=i+1
-    nuevamatriz=ordenar_agrupar(matriz)
+    if matriz != []:
+        nuevamatriz=ordenar_agrupar(matriz)
+    else:
+        nuevamatriz=matriz
     return nuevamatriz
 
 def calcular_consumo_viajes(empresa,factores):
@@ -621,5 +635,8 @@ def calcular_consumo_viajes(empresa,factores):
             matriz[i].append(viaje.fecha_viaje.year)
             matriz[i].append(viaje.co2+viaje.noches_hotel*float(factores.Viaje_consumo_noches))
             i=i+1
-    nuevamatriz=ordenar_agrupar(matriz)
+    if matriz != []:
+        nuevamatriz=ordenar_agrupar(matriz)
+    else:
+        nuevamatriz=matriz
     return nuevamatriz

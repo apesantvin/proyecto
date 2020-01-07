@@ -10,17 +10,28 @@
         <p> No tenemos datos de esta empresa. </p>
         {% if user == empresa.usuario %}
             <p> Para añadir datos pulse <span class="glyphicon glyphicon-cog"></span> y añadalos manualmente o a través de un archivo csv. </p>
+            <p> En caso de que ya haya añadido los datos, entre en la configuración (<span class="glyphicon glyphicon-cog"></span>) y actualice la base de datos </p>
         {% endif %}
         </div>
     {% else %}
-        CO2 total -> {{anual}}
-        <br /><br />
-        CO2 por edificio -> {{edificios}}
-        <br /><br />
-        CO2 por vehiculo -> {{vehiculos}}
-        <br /><br />
-        CO2 por viaje -> {{viajes}}
-        <br /><br />
+        <div class="graficos">
+<!--             CO2 total -> {{anual}} -->
+            <br />
+            <a href="{% url 'mostrar_grafico' Gpk=1 %}">Ver Grafico co2 total</a>
+            <br /><br />
+<!--             CO2 por edificio -> {{edificios}} -->
+            <br />
+            <a href="{% url 'mostrar_grafico' Gpk=2 %}">Ver Grafico co2 por edificio</a>
+            <br /><br />
+<!--             CO2 por vehiculo -> {{vehiculos}} -->
+            <br />
+            <a href="{% url 'mostrar_grafico' Gpk=3 %}">Ver Grafico co2 por vehiculo</a>
+            <br /><br />
+<!--             CO2 por viaje -> {{viajes}} -->
+            <br />
+            <a href="{% url 'mostrar_grafico' Gpk=4 %}">Ver Grafico co2 por viaje</a>
+            <br /><br />
+        </div>
 <!--        <iframe  src='GestionCO2/templates/graficos/grafico.html'></iframe>-->
     {% endif %}
 {% endblock %}

@@ -34,4 +34,5 @@ urlpatterns = [
     path('experto_mensaje_detalles/<int:mensajePK>/', views.mensaje_detalles_experto, name='mensaje_detalles_experto'),
     path('lista_expertos_añadir', views.lista_expertos_añadir, name='lista_expertos_añadir'),
     path('lista_expertos_eliminar', views.lista_expertos_eliminar, name='lista_expertos_eliminar'),
+    path('grafico/<int:Gpk>', views.mostrar_grafico, name='mostrar_grafico'),
 ]+ static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
