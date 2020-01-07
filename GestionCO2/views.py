@@ -58,13 +58,13 @@ def empresa_detalles(request,pk):
             fecha1.append(dato.Año)
             cantidad1.append(float(dato.CO2_generado))
         source = pd.DataFrame({
-                'a': fecha1,
-                'b': cantidad1
+                'Año': fecha1,
+                'kg CO2': cantidad1
                 })
 
         grafico=alt.Chart(source).mark_bar().encode(
-            x='a',
-            y='b'
+            x='Año',
+            y='kg CO2'
         )
         grafico.save('GestionCO2/templates/graficos/grafico'+str(numero)+'.html')
     if co2_anual.exists() or co2_edificios.exists() or co2_viajes.exists() or co2_vehiculos.exists():
