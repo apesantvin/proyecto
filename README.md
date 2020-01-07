@@ -7,10 +7,10 @@ El grupo está compuesto por:
   
   - Harkaitz Goyena Baroja
 
-Vamos a explicartecuales son las funcionalidades de nuestra pagina web:
+Vamos a explicarte cuales son las funcionalidades de nuestra pagina web:
   Existen tres tipos de usuarios:
       - Los administradores: que puden dar permisos de expertos a aquellas personas que lo pidan
-      - Expertos: son perosnas expertas en la generacion del CO2 que pueden ayudar a las empresas a reducirlo. Para ser experto tiene que pedirle al administrador.
+      - Expertos: son personas expertas en la generacion del CO2 que pueden ayudar a las empresas a reducirlo. Para ser experto tiene que pedirle al administrador.
       - Usuarios de empresa que crean las empresas y añaden los consumos. Estos usuarios son accesibles por los emprleados de la empresa para que pueden añadir los consumode pertinentes. 
   La pestaña de experto es la maleta que aparece a la derecha de todas las pantallas. Según tu tipo de usuario podrás ver una cosa u otra.
   De las empresas se pueden ver su consumo en una serie de graficos. La intención era ponerlo en la pagina principal de la empresa pero no ha sido posible y se puede acceder a ellas a traves de un link.
